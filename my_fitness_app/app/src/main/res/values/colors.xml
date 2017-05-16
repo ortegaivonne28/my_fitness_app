@@ -3,4 +3,18 @@
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#FF4081</color>
+
+    <color name="colorPrimaryMain">#2295F4</color>
+    <color name="colorPrimaryDarkMain">#1F85D9</color>
+    <color name="colorGradienteEndMain">#109E8C</color>
+
+    <color name="colorPrimaryLogin">#591A6F</color>
+    <color name="colorPrimaryDarkLogin">#461457</color>
+    <color name="colorGradienteEndLogin">#13B7B9</color>
+    <color name="colorAccentLogin">#8CA4C6</color>
+
+
+
+
+
 </resources>
