@@ -113,10 +113,15 @@ implements AddWeekWorkoutFragment.getList{
                 ((SingleExerciseViewHolder) holder).mExerciseName.addTextChangedListener(new CustomTextWatcher(((SingleExerciseViewHolder) holder).mExerciseName,holder.getAdapterPosition(),VIEW_TYPE_SINGLE,CustomTextWatcher.EXERCISE_ONE));
                 ((SingleExerciseViewHolder) holder).mReps.addTextChangedListener(new CustomTextWatcher(((SingleExerciseViewHolder) holder).mReps,holder.getAdapterPosition(),VIEW_TYPE_SINGLE,CustomTextWatcher.REPS_ONE));
                 ((SingleExerciseViewHolder) holder).mSets.addTextChangedListener(new CustomTextWatcher(((SingleExerciseViewHolder) holder).mSets,holder.getAdapterPosition(),VIEW_TYPE_SINGLE,CustomTextWatcher.SETS));
+
                 SingleExercise singleExercise = (SingleExercise) mList.get(position);
-                ((SingleExerciseViewHolder) holder).mExerciseName.setText(singleExercise.getName());
-                ((SingleExerciseViewHolder) holder).mReps.setText(singleExercise.getReps());
-                ((SingleExerciseViewHolder) holder).mSets.setText(singleExercise.getSets());
+
+                if (singleExercise.getName()!=null)
+                    ((SingleExerciseViewHolder) holder).mExerciseName.setText(singleExercise.getName());
+                if(singleExercise.getReps()!=0)
+                    ((SingleExerciseViewHolder) holder).mReps.setText(String.valueOf(singleExercise.getReps()));
+                if(singleExercise.getSets()!=0)
+                    ((SingleExerciseViewHolder) holder).mSets.setText(String.valueOf(singleExercise.getSets()));
             }
             if(holder instanceof SuperSetViewHolder)
             {
@@ -125,12 +130,19 @@ implements AddWeekWorkoutFragment.getList{
                 ((SuperSetViewHolder) holder).mSets.addTextChangedListener(new CustomTextWatcher(((SuperSetViewHolder) holder).mSets,holder.getAdapterPosition(),VIEW_TYPE_SUPER,CustomTextWatcher.SETS));
                 ((SuperSetViewHolder) holder).mRepsOne.addTextChangedListener(new CustomTextWatcher(((SuperSetViewHolder) holder).mRepsOne,holder.getAdapterPosition(),VIEW_TYPE_SUPER,CustomTextWatcher.REPS_ONE));
                 ((SuperSetViewHolder) holder).mRepsTwo.addTextChangedListener(new CustomTextWatcher(((SuperSetViewHolder) holder).mRepsTwo,holder.getAdapterPosition(),VIEW_TYPE_SUPER,CustomTextWatcher.REPS_TWO));
+
                 SuperSet superSet = (SuperSet) mList.get(position);
-                ((SuperSetViewHolder) holder).mExerciseOneName.setText(superSet.getNameOne());
-                ((SuperSetViewHolder) holder).mExerciseTwoName.setText(superSet.getNameTwo());
-                ((SuperSetViewHolder) holder).mRepsOne.setText(String.valueOf(superSet.getRepsForFirst()));
-                ((SuperSetViewHolder) holder).mRepsTwo.setText(String.valueOf(superSet.getRepsForSecond()));
-                ((SuperSetViewHolder) holder).mSets.setText(String.valueOf(superSet.getSets()));
+
+                if(superSet.getNameOne()!=null)
+                    ((SuperSetViewHolder) holder).mExerciseOneName.setText(superSet.getNameOne());
+                if(superSet.getNameTwo()!=null)
+                    ((SuperSetViewHolder) holder).mExerciseTwoName.setText(superSet.getNameTwo());
+                if(superSet.getRepsForFirst()!=0)
+                    ((SuperSetViewHolder) holder).mRepsOne.setText(String.valueOf(superSet.getRepsForFirst()));
+                if(superSet.getRepsForSecond()!=0)
+                    ((SuperSetViewHolder) holder).mRepsTwo.setText(String.valueOf(superSet.getRepsForSecond()));
+                if(superSet.getSets()!=0)
+                    ((SuperSetViewHolder) holder).mSets.setText(String.valueOf(superSet.getSets()));
 
             }
             if(holder instanceof TripleSetViewHolder)
@@ -142,14 +154,24 @@ implements AddWeekWorkoutFragment.getList{
                 ((TripleSetViewHolder) holder).mRepsTwo.addTextChangedListener(new CustomTextWatcher(((TripleSetViewHolder) holder).mRepsTwo,holder.getAdapterPosition(),VIEW_TYPE_TRIPLE,CustomTextWatcher.REPS_TWO));
                 ((TripleSetViewHolder) holder).mRepsThree.addTextChangedListener(new CustomTextWatcher(((TripleSetViewHolder) holder).mRepsThree,holder.getAdapterPosition(),VIEW_TYPE_TRIPLE,CustomTextWatcher.REPS_THREE));
                 ((TripleSetViewHolder) holder).mSets.addTextChangedListener(new CustomTextWatcher(((TripleSetViewHolder) holder).mSets,holder.getAdapterPosition(),VIEW_TYPE_TRIPLE,CustomTextWatcher.SETS));
+
                 TripleSet tripleSet = (TripleSet) mList.get(position);
-                ((SuperSetViewHolder) holder).mExerciseOneName.setText(tripleSet.getNameOne());
-                ((SuperSetViewHolder) holder).mExerciseTwoName.setText(tripleSet.getNameTwo());
-                ((SuperSetViewHolder) holder).mRepsOne.setText(String.valueOf(tripleSet.getRepsFirstExercise()));
-                ((SuperSetViewHolder) holder).mRepsTwo.setText(String.valueOf(tripleSet.getRepsSecondExercise()));
-                ((SuperSetViewHolder) holder).mRepsOne.setText(String.valueOf(tripleSet.getRepsFirstExercise()));
-                ((SuperSetViewHolder) holder).mRepsTwo.setText(String.valueOf(tripleSet.getRepsThirdExercise()));
-                ((SuperSetViewHolder) holder).mSets.setText(String.valueOf(tripleSet.getSets()));
+
+                if(tripleSet.getNameOne()!=null)
+                    ((TripleSetViewHolder) holder).mExerciseOneName.setText(tripleSet.getNameOne());
+                if(tripleSet.getNameTwo()!=null)
+                    ((TripleSetViewHolder) holder).mExerciseTwoName.setText(tripleSet.getNameTwo());
+                if(tripleSet.getNameThree()!=null)
+                    ((TripleSetViewHolder) holder).mExerciseThreeName.setText(tripleSet.getNameTwo());
+
+                if(tripleSet.getRepsFirstExercise()!=0)
+                    ((TripleSetViewHolder) holder).mRepsOne.setText(String.valueOf(tripleSet.getRepsFirstExercise()));
+                if(tripleSet.getRepsSecondExercise()!=0)
+                    ((TripleSetViewHolder) holder).mRepsTwo.setText(String.valueOf(tripleSet.getRepsSecondExercise()));
+                if(tripleSet.getRepsThirdExercise()!=0)
+                    ((TripleSetViewHolder) holder).mRepsThree.setText(String.valueOf(tripleSet.getRepsSecondExercise()));
+                if(tripleSet.getSets()!=0)
+                    ((TripleSetViewHolder) holder).mSets.setText(String.valueOf(tripleSet.getSets()));
 
             }
         }

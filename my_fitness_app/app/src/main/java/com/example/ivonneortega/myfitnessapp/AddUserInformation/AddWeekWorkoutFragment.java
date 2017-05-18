@@ -7,6 +7,8 @@ import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,11 +27,13 @@ import java.util.List;
 public class AddWeekWorkoutFragment extends Fragment implements View.OnClickListener {
 
     private addWeekWorkoutInterface mListener;
-    private TextView mMonday, mTuesday, mWednesday, mThrusday, mFriday, mSaturday, mSunday;
+    private TextView mMonday, mTuesday, mWednesday, mThrusday, mFriday, mSaturday, mSunday, mWorkoutName;
 //    private TextView mTitle, mExercise, mReps, mSets;
     private String mDay;
     public Workout mWorkout;
-    private String mWorkoutname, mRepsText, mSetsText, mExerciseName;
+    private String mRepsText;
+    private String mSetsText;
+    private String mExerciseName;
     private Switch mRestDay;
     public static List<Exercise> mList;
     private RecyclerView mRecyclerView;
@@ -88,11 +92,13 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
         mFriday = (TextView) view.findViewById(R.id.letter_friday);
         mSaturday = (TextView) view.findViewById(R.id.letter_saturday);
         mSunday = (TextView) view.findViewById(R.id.letter_sunday);
+        mWorkoutName = (TextView) view.findViewById(R.id.workout_name_title);
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext(),LinearLayoutManager.VERTICAL,false));
         mAdapter = new ExerciseRecyclerViewAdapter(mList);
         mRecyclerView.setAdapter(mAdapter);
+        mWorkout = new Workout();
 
 
 
@@ -105,6 +111,7 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
         mFriday.setOnClickListener(this);
         mSaturday.setOnClickListener(this);
         mSunday.setOnClickListener(this);
+        mRestDay.setOnClickListener(this);
 
         switch (mDay)
         {
@@ -130,6 +137,23 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
                 mSunday.setTextColor(ContextCompat.getColor(mMonday.getContext(), R.color.colorTextSelectedWeek));
                 break;
         }
+
+        mWorkoutName.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                mWorkout.setNameOfWorkout(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+
+            }
+        });
 
 //        if(mWorkoutname!=null)
 //            mTitle.setText(mWorkoutname);
@@ -184,31 +208,37 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
     @Override
     public void onClick(View v) {
 
-        Workout workout = new Workout();
-        workout.setExercises(mAdapter.getList());
+        mWorkout.setExercises(mAdapter.getList());
 
         switch (v.getId())
         {
             case R.id.letter_monday:
-                mListener.changeDay("Monday",workout, mDay);
+                mListener.changeDay("Monday",mWorkout, mDay);
                 break;
             case R.id.letter_tuesday:
-                mListener.changeDay("Tuesday",workout, mDay);
+                mListener.changeDay("Tuesday",mWorkout, mDay);
                 break;
             case R.id.letter_wednesday:
-                mListener.changeDay("Wednesday",workout, mDay);
+                mListener.changeDay("Wednesday",mWorkout, mDay);
                 break;
             case R.id.letter_thrusday:
-                mListener.changeDay("Thrusday",workout, mDay);
+                mListener.changeDay("Thrusday",mWorkout, mDay);
                 break;
             case R.id.letter_friday:
-                mListener.changeDay("Friday",workout, mDay);
+                mListener.changeDay("Friday",mWorkout, mDay);
                 break;
             case R.id.letter_saturday:
-                mListener.changeDay("Saturday",workout, mDay);
+                mListener.changeDay("Saturday",mWorkout, mDay);
                 break;
             case R.id.letter_sunday:
-                mListener.changeDay("Sunday",workout, mDay);
+                mListener.changeDay("Sunday",mWorkout, mDay);
+                break;
+
+            case R.id.rest_day:
+                if(mRestDay.isChecked())
+                    mRecyclerView.setVisibility(View.GONE);
+                else
+                    mRecyclerView.setVisibility(View.VISIBLE);
                 break;
         }
     }
