@@ -1,5 +1,6 @@
 package com.example.ivonneortega.myfitnessapp.Data;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -19,6 +20,8 @@ public class Workout {
     }
 
     public Workout() {
+        mNameOfWorkout=null;
+        mExercises = new ArrayList<>();
     }
 
     public long getId() {

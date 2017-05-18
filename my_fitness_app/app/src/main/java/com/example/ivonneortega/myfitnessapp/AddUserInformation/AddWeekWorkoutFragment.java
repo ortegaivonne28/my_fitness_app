@@ -30,12 +30,12 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
     private TextView mMonday, mTuesday, mWednesday, mThrusday, mFriday, mSaturday, mSunday, mWorkoutName;
 //    private TextView mTitle, mExercise, mReps, mSets;
     private String mDay;
-    public Workout mWorkout;
+    public static Workout mWorkout;
     private String mRepsText;
     private String mSetsText;
     private String mExerciseName;
     private Switch mRestDay;
-    public static List<Exercise> mList;
+    public List<Exercise> mList;
     private RecyclerView mRecyclerView;
     ExerciseRecyclerViewAdapter mAdapter;
 
@@ -55,12 +55,11 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
         args.putString("mDay",day);
         if(workout!=null)
         {
-            ArrayList<Exercise> array = (ArrayList<Exercise>) workout.getExercises();
-            mList = workout.getExercises();
+            mWorkout = workout;
         }
         else
         {
-            mList = new ArrayList<>();
+            mWorkout = new Workout();
         }
         fragment.setArguments(args);
         return fragment;
@@ -72,6 +71,10 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
         if (getArguments() != null) {
             mDay = getArguments().getString("mDay");
         }
+        if(mWorkout!=null)
+            mList = mWorkout.getExercises();
+        else
+            mList = new ArrayList<>();
     }
 
     @Override
@@ -93,12 +96,13 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
         mSaturday = (TextView) view.findViewById(R.id.letter_saturday);
         mSunday = (TextView) view.findViewById(R.id.letter_sunday);
         mWorkoutName = (TextView) view.findViewById(R.id.workout_name_title);
+        if(mWorkout!=null && mWorkout.getNameOfWorkout()!=null)
+            mWorkoutName.setText(mWorkout.getNameOfWorkout());
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext(),LinearLayoutManager.VERTICAL,false));
         mAdapter = new ExerciseRecyclerViewAdapter(mList);
         mRecyclerView.setAdapter(mAdapter);
-        mWorkout = new Workout();
 
 
 
