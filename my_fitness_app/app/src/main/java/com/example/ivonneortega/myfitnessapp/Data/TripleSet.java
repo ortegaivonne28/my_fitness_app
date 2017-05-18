@@ -7,9 +7,10 @@ import java.util.List;
  * Created by ivonneortega on 5/16/17.
  */
 
-public class TripleSet {
+public class TripleSet extends Exercise {
 
     int mSets, mRepsFirstExercise, mRepsSecondExercise, mRepsThirdExercise;
+    String mNameOne, mNameTwo, mNameThree;
     List<Repetition> mRepetitionsFirst;
     List<Repetition> mRepetitionsSecond;
     List<Repetition> mRepetitionsThird;
@@ -22,6 +23,57 @@ public class TripleSet {
         mRepetitionsFirst = new ArrayList<>();
         mRepetitionsSecond = new ArrayList<>();
         mRepetitionsThird = new ArrayList<>();
+    }
+
+    public TripleSet(int sets, int repsFirstExercise, int repsSecondExercise, int repsThirdExercise, String nameOne, String nameTwo, String nameThree, List<Repetition> repetitionsFirst, List<Repetition> repetitionsSecond, List<Repetition> repetitionsThird) {
+        mSets = sets;
+        mRepsFirstExercise = repsFirstExercise;
+        mRepsSecondExercise = repsSecondExercise;
+        mRepsThirdExercise = repsThirdExercise;
+        mNameOne = nameOne;
+        mNameTwo = nameTwo;
+        mNameThree = nameThree;
+        mRepetitionsFirst = repetitionsFirst;
+        mRepetitionsSecond = repetitionsSecond;
+        mRepetitionsThird = repetitionsThird;
+    }
+
+    public TripleSet() {
+        mSets=0;
+        mRepsFirstExercise=0;
+        mRepsSecondExercise=0;
+        mRepsThirdExercise = 0;
+        mNameOne=null;
+        mNameTwo=null;
+        mNameThree = null;
+        mRepetitionsFirst = new ArrayList<>();
+        mRepetitionsSecond = new ArrayList<>();
+        mRepetitionsThird = new ArrayList<>();
+
+    }
+
+    public String getNameOne() {
+        return mNameOne;
+    }
+
+    public void setNameOne(String nameOne) {
+        mNameOne = nameOne;
+    }
+
+    public String getNameTwo() {
+        return mNameTwo;
+    }
+
+    public void setNameTwo(String nameTwo) {
+        mNameTwo = nameTwo;
+    }
+
+    public String getNameThree() {
+        return mNameThree;
+    }
+
+    public void setNameThree(String nameThree) {
+        mNameThree = nameThree;
     }
 
     public int getSets() {

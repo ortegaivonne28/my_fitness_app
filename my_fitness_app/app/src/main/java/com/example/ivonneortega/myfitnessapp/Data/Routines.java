@@ -6,12 +6,12 @@ import java.util.List;
  * Created by ivonneortega on 5/16/17.
  */
 
-class Routines {
+public class Routines {
 
-    long mId;
-    String mName;
-    int mHowLong;
-    List<Week> mWeeks;
+    private long mId;
+    private String mName;
+    private int mHowLong;
+    private List<Week> mWeeks;
 
     public Routines(long id, String name, int howLong, List<Week> weeks) {
         mId = id;

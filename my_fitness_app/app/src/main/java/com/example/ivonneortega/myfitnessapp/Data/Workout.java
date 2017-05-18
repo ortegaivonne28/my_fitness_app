@@ -18,6 +18,9 @@ public class Workout {
         mExercises = exercises;
     }
 
+    public Workout() {
+    }
+
     public long getId() {
         return mId;
     }

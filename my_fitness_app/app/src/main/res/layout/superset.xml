@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="20dp"
+        android:orientation="vertical"
+        android:background="@android:color/white"
+        android:layout_below="@id/workout_name_linear"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:id="@+id/exercise_name_one"
+            android:layout_height="wrap_content"
+            android:hint="Exercise One"/>
+
+        <EditText
+            android:layout_width="100dp"
+            android:layout_below="@id/exercise_name_one"
+            android:id="@+id/number_of_reps_one"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="Reps"/>
+
+        <EditText
+            android:layout_width="match_parent"
+            android:id="@+id/exercise_name_two"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/number_of_reps_one"
+            android:hint="Exercise Two"/>
+
+        <EditText
+            android:layout_width="100dp"
+            android:layout_below="@id/exercise_name_two"
+            android:id="@+id/number_of_reps_two"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="Reps"/>
+
+        <EditText
+            android:layout_width="100dp"
+            android:id="@+id/number_of_sets"
+            android:layout_below="@id/number_of_reps_two"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:hint="Sets"/>
+    </RelativeLayout>
+
+</LinearLayout>

@@ -1,22 +1,31 @@
 package com.example.ivonneortega.myfitnessapp.Data;
 
+import okhttp3.Challenge;
+
 /**
  * Created by ivonneortega on 5/16/17.
  */
 
-class Day {
+public class Day {
 
-    long mId, mWorkoutId, mChallengeId,mCardioId;
-    int mWaterIntake;
-    float mWeight;
+    private long mId;
+    private Workout mWorkout;
+    private Challenges mChallenge;
+    private Cardio mCardio;
+    private int mWaterIntake;
+    private float mWeight;
 
-    public Day(long id, long workoutId, long challengeId, long cardioId, int waterIntake, float weight) {
+    public Day(long id, Workout workout, Challenges challenge, Cardio cardio, int waterIntake, float weight) {
         mId = id;
-        mWorkoutId = workoutId;
-        mChallengeId = challengeId;
-        mCardioId = cardioId;
+        mWorkout = workout;
+        mChallenge = challenge;
+        mCardio = cardio;
         mWaterIntake = waterIntake;
         mWeight = weight;
+    }
+
+    public Day(Workout workout) {
+        mWorkout = workout;
     }
 
     public long getId() {
@@ -27,28 +36,28 @@ class Day {
         mId = id;
     }
 
-    public long getWorkoutId() {
-        return mWorkoutId;
+    public Workout getWorkout() {
+        return mWorkout;
     }
 
-    public void setWorkoutId(long workoutId) {
-        mWorkoutId = workoutId;
+    public void setWorkout(Workout workout) {
+        mWorkout = workout;
     }
 
-    public long getChallengeId() {
-        return mChallengeId;
+    public Challenges getChallenge() {
+        return mChallenge;
     }
 
-    public void setChallengeId(long challengeId) {
-        mChallengeId = challengeId;
+    public void setChallenge(Challenges challenge) {
+        mChallenge = challenge;
     }
 
-    public long getCardioId() {
-        return mCardioId;
+    public Cardio getCardio() {
+        return mCardio;
     }
 
-    public void setCardioId(long cardioId) {
-        mCardioId = cardioId;
+    public void setCardio(Cardio cardio) {
+        mCardio = cardio;
     }
 
     public int getWaterIntake() {

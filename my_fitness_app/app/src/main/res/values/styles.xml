@@ -27,6 +27,12 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDarkLogin</item>
     </style>
 
+    <style name="AddRoutineActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimaryRoutine</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkRoutine</item>
+        <item name="colorAccent">@color/colorAccentRoutine</item>
+    </style>
+
 
 
 </resources>

@@ -13,6 +13,7 @@ public class SingleExercise extends Exercise {
     List<Repetition> mRepetitions;
 
     public SingleExercise(int sets, int reps) {
+        super();
         mSets = sets;
         mReps = reps;
         mRepetitions = new ArrayList<>();

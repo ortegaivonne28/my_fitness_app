@@ -9,13 +9,13 @@ import java.util.List;
 
 public class User {
 
-    String mId;
-    String mEmail, mName, mLastname, mUsername;
-    float mWeight, mDesiredWeight;
-    int mHowMuchWater;
-    List<Long> mFriends;
-    List<Routines> mRoutines;
-    List<Challenges> mChallenges;
+    private String mId;
+    private String mEmail, mName, mLastname, mUsername;
+    private float mWeight, mDesiredWeight;
+    private int mHowMuchWater;
+    private List<Long> mFriends;
+    private List<Routines> mRoutines;
+    private List<Challenges> mChallenges;
 
     public User() {
     }
