@@ -3,6 +3,7 @@ package com.example.ivonneortega.myfitnessapp.AddUserInformation;
 import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,6 +17,7 @@ import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import com.example.ivonneortega.myfitnessapp.Data.Day;
 import com.example.ivonneortega.myfitnessapp.Data.Exercise;
 import com.example.ivonneortega.myfitnessapp.Data.Workout;
 import com.example.ivonneortega.myfitnessapp.R;
@@ -28,12 +30,9 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
 
     private addWeekWorkoutInterface mListener;
     private TextView mMonday, mTuesday, mWednesday, mThrusday, mFriday, mSaturday, mSunday, mWorkoutName;
-//    private TextView mTitle, mExercise, mReps, mSets;
     private String mDay;
     public static Workout mWorkout;
-    private String mRepsText;
-    private String mSetsText;
-    private String mExerciseName;
+    private FloatingActionButton mFab;
     private Switch mRestDay;
     public List<Exercise> mList;
     private RecyclerView mRecyclerView;
@@ -49,13 +48,13 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
     }
 
 
-    public static AddWeekWorkoutFragment newInstance(String day, Workout workout) {
+    public static AddWeekWorkoutFragment newInstance(String day, Day dayObject) {
         AddWeekWorkoutFragment fragment = new AddWeekWorkoutFragment();
         Bundle args = new Bundle();
         args.putString("mDay",day);
-        if(workout!=null)
+        if(dayObject!=null &&dayObject.getWorkout()!=null)
         {
-            mWorkout = workout;
+            mWorkout = dayObject.getWorkout();
         }
         else
         {
@@ -95,6 +94,7 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
         mFriday = (TextView) view.findViewById(R.id.letter_friday);
         mSaturday = (TextView) view.findViewById(R.id.letter_saturday);
         mSunday = (TextView) view.findViewById(R.id.letter_sunday);
+        mFab = (FloatingActionButton) view.findViewById(R.id.fab);
         mWorkoutName = (TextView) view.findViewById(R.id.workout_name_title);
         if(mWorkout!=null && mWorkout.getNameOfWorkout()!=null)
             mWorkoutName.setText(mWorkout.getNameOfWorkout());
@@ -116,6 +116,7 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
         mSaturday.setOnClickListener(this);
         mSunday.setOnClickListener(this);
         mRestDay.setOnClickListener(this);
+        mFab.setOnClickListener(this);
 
         switch (mDay)
         {
@@ -237,12 +238,14 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
             case R.id.letter_sunday:
                 mListener.changeDay("Sunday",mWorkout, mDay);
                 break;
-
             case R.id.rest_day:
                 if(mRestDay.isChecked())
                     mRecyclerView.setVisibility(View.GONE);
                 else
                     mRecyclerView.setVisibility(View.VISIBLE);
+                break;
+            case R.id.fab:
+                mListener.clickedOnFab();
                 break;
         }
     }
@@ -251,6 +254,7 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
     public interface addWeekWorkoutInterface {
         // TODO: Update argument type and name
         void changeDay(String day, Workout workout, String currentDay);
+        void clickedOnFab();
     }
 
     public interface getList{

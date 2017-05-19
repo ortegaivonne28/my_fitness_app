@@ -1,6 +1,6 @@
 package com.example.ivonneortega.myfitnessapp.Data;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -10,16 +10,20 @@ import java.util.List;
 public class Week {
 
     long mId;
-    List<Day> mDayList;
+    HashMap<String, Day> mDayHashMap;
 
     public Week() {
         long mId = -1;
-        mDayList = new ArrayList<>();
+        mDayHashMap = new HashMap<>();
     }
 
-    public Week(long id, List<Day> dayList) {
+    public Week(long id, HashMap dayList) {
         mId = id;
-        mDayList = dayList;
+        mDayHashMap = dayList;
+    }
+
+    public Week(HashMap<String, Day> dayHashMap) {
+        mDayHashMap = dayHashMap;
     }
 
     public long getId() {
@@ -30,11 +34,11 @@ public class Week {
         mId = id;
     }
 
-    public List<Day> getDayList() {
-        return mDayList;
+    public HashMap<String, Day> getDayHashMap() {
+        return mDayHashMap;
     }
 
-    public void setDayList(List<Day> dayList) {
-        mDayList = dayList;
+    public void setDayHashMap(HashMap dayHashMap) {
+        mDayHashMap = dayHashMap;
     }
 }

@@ -8,23 +8,39 @@ import java.util.List;
 
 public class Routines {
 
-    private long mId;
+    private String mId;
     private String mName;
     private int mHowLong;
     private List<Week> mWeeks;
 
-    public Routines(long id, String name, int howLong, List<Week> weeks) {
+    public Routines(String id, String name, int howLong, List<Week> weeks) {
         mId = id;
         mName = name;
         mHowLong = howLong;
         mWeeks = weeks;
     }
 
-    public long getId() {
+    public Routines(String name, int howLong, List<Week> weeks) {
+        mName = name;
+        mHowLong = howLong;
+        mWeeks = weeks;
+    }
+
+    public Routines() {
+        mName = null;
+        mHowLong = -1;
+        mWeeks = null;
+    }
+
+    public Routines(List<Week> weeks) {
+        mWeeks = weeks;
+    }
+
+    public String getId() {
         return mId;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         mId = id;
     }
 

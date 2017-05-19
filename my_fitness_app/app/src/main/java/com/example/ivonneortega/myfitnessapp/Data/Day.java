@@ -26,6 +26,10 @@ public class Day {
 
     public Day(Workout workout) {
         mWorkout = workout;
+        mChallenge = null;
+        mCardio = null;
+        mWaterIntake = 0;
+        mWeight = 0;
     }
 
     public long getId() {

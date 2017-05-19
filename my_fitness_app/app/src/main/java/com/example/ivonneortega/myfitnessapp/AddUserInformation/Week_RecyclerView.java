@@ -50,9 +50,9 @@ public class Week_RecyclerView extends RecyclerView.Adapter<Week_RecyclerView.Cu
 
     @Override
     public void onBindViewHolder(CustomViewHolder holder, int position) {
-        if(position == mList.size()-1 || mList.size()==0)
+        if(position == mList.size() || mList.size()==0)
         {
-            holder.mAddWeek.setText("Add Week "+mList.size()+1);
+            holder.mAddWeek.setText("Add Week");
             holder.mAddRoot.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -63,7 +63,7 @@ public class Week_RecyclerView extends RecyclerView.Adapter<Week_RecyclerView.Cu
         }
         else
         {
-            holder.mWeekTitle.setText("Week "+position);
+            holder.mWeekTitle.setText("Week "+position+1);
         }
     }
 
@@ -91,7 +91,7 @@ public class Week_RecyclerView extends RecyclerView.Adapter<Week_RecyclerView.Cu
 
     @Override
     public int getItemViewType(int position) {
-        if(position == mList.size()-1 || mList.size()==0)
+        if(position == mList.size() || mList.size()==0)
             return VIEW_TYPE_ADD;
         return VIEW_TYPE_WEEK;
     }

@@ -4,6 +4,7 @@ import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v7.widget.LinearLayoutManager;
@@ -11,7 +12,9 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.example.ivonneortega.myfitnessapp.Data.Routines;
 import com.example.ivonneortega.myfitnessapp.Data.Week;
 import com.example.ivonneortega.myfitnessapp.R;
 
@@ -26,6 +29,9 @@ implements Week_RecyclerView.RecyclerViewInterface{
     private RecyclerView mRecyclerView;
     private List<Week> mWeekList;
     public static final String LIST = "list";
+    private FloatingActionButton mFloatingActionButton;
+    private Routines mRoutines;
+    private TextView mTitle, mDuration;
 
     public AddRoutineFragment() {
         // Required empty public constructor
@@ -64,9 +70,28 @@ implements Week_RecyclerView.RecyclerViewInterface{
         mRecyclerView = (RecyclerView) view.findViewById(R.id.routine_recycler_view);
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(view.getContext(),LinearLayoutManager.VERTICAL,false);
         mRecyclerView.setLayoutManager(linearLayoutManager);
-
         Week_RecyclerView adapter = new Week_RecyclerView(mWeekList,this);
         mRecyclerView.setAdapter(adapter);
+
+        mRoutines = new Routines(mWeekList);
+
+        mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
+        mDuration = (TextView) view.findViewById(R.id.routine_duration);
+        mTitle = (TextView) view.findViewById(R.id.routine_title);
+
+
+        mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(mTitle.getText().toString().trim().isEmpty())
+                    mTitle.setError("Please add routine title");
+                else
+                {
+                    mRoutines.setName(mTitle.toString());
+                    mListener.saveRoutine(mRoutines);
+                }
+            }
+        });
     }
 
     public void onButtonPressed(Uri uri) {
@@ -101,6 +126,7 @@ implements Week_RecyclerView.RecyclerViewInterface{
     public interface RoutineInterface {
         // TODO: Update argument type and name
         void AddWeekToRoutine();
+        void saveRoutine(Routines routines);
     }
 }
 

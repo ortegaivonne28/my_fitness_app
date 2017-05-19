@@ -41,6 +41,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
+                    android:id="@+id/routine_title"
                     android:backgroundTint="@android:color/transparent"
                     android:hint="Title"
                     android:textColorHint="#787878"/>
@@ -60,6 +61,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
+                    android:id="@+id/routine_duration"
                     android:backgroundTint="@android:color/transparent"
                     android:hint="Duration (weeks)"
                     android:textColorHint="#787878"/>

@@ -88,26 +88,65 @@ public class LoginActivity extends AppCompatActivity
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("users");
+        final FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        myRef.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+        myRef.orderByChild("id").equalTo(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
-            public void onDataChange(DataSnapshot snapshot) {
-                if (snapshot.exists()) {
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
                     startActivity(new Intent(LoginActivity.this,MainActivity.class));
                 }
                 else {
                     startActivity(new Intent(LoginActivity.this,AddUserInformationActivity.class));
                 }
-            }
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
 
             }
-        });
+
+                                                                                                  @Override
+                                                                                                  public void onCancelled(DatabaseError databaseError) {
+
+                                                                                                  }
+                                                                                              });
+
+
+//        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot dataSnapshot) {
+//                if (dataSnapshot.hasChild(currentUser.getUid())) {
+//                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
+//                }
+//                else
+//                    startActivity(new Intent(LoginActivity.this,AddUserInformationActivity.class));
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
+
+//        myRef.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+//            @Override
+//            public void onDataChange(DataSnapshot snapshot) {
+//                if (snapshot.exists()) {
+//                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
+//                }
+//                else {
+//                    startActivity(new Intent(LoginActivity.this,AddUserInformationActivity.class));
+//                }
+//            }
+//
+//            @Override
+//            public void onCancelled(DatabaseError databaseError) {
+//
+//            }
+//        });
     }
 
-    private void signIn() {
+
+
+            private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
