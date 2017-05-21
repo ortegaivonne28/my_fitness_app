@@ -6,7 +6,7 @@ package com.example.ivonneortega.myfitnessapp.Data;
 
 public class Challenges {
 
-    long mId, mFriendId, mExerciseId;
+    private long mId, mFriendId, mExerciseId;
 
     public Challenges(long id, long friendId, long exerciseId) {
         mId = id;

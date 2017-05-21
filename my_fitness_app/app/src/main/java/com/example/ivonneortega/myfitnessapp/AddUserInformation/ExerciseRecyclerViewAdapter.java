@@ -19,6 +19,7 @@ import com.example.ivonneortega.myfitnessapp.Data.SuperSet;
 import com.example.ivonneortega.myfitnessapp.Data.TripleSet;
 import com.example.ivonneortega.myfitnessapp.Data.Week;
 import com.example.ivonneortega.myfitnessapp.R;
+import com.example.ivonneortega.myfitnessapp.Routines.ExercisesPerDaysActivity;
 
 import java.util.List;
 
@@ -37,9 +38,21 @@ implements AddWeekWorkoutFragment.getList{
     public static final int VIEW_TYPE_TRIPLE = 3;
     public static final int VIEW_TYPE_ADD = 4;
     private RecyclerView myRecyclerView;
+    private int mType;
+    private updateListOfExercisesInterface mListener;
 
-    public ExerciseRecyclerViewAdapter(List<Exercise> list) {
+    public static final int TYPE_USER_CREATING = 1;
+    public static final int TYPE_USER_EDITING = 2;
+
+    public ExerciseRecyclerViewAdapter(List<Exercise> list, int type) {
         mList = list;
+        mType = type;
+    }
+
+    public ExerciseRecyclerViewAdapter(List<Exercise> list, int type, updateListOfExercisesInterface listener) {
+        mList = list;
+        mType = type;
+        mListener = listener;
     }
 
     @Override
@@ -209,13 +222,17 @@ implements AddWeekWorkoutFragment.getList{
 
     @Override
     public int getItemCount() {
+        if(mType == TYPE_USER_CREATING)
         return mList.size()+1;
+        else
+            return mList.size();
     }
 
     @Override
     public List<Exercise> getList() {
         return mList;
     }
+
 
     public class SingleExerciseViewHolder extends RecyclerView.ViewHolder{
 
@@ -461,10 +478,16 @@ implements AddWeekWorkoutFragment.getList{
                             break;
                     }
             }
+            if(mType == TYPE_USER_EDITING)
+                mListener.updateListOfExercises(mList);
         }
 
         public void afterTextChanged(Editable s) {
         }
     }
 
+    public interface updateListOfExercisesInterface
+    {
+        void updateListOfExercises(List<Exercise> exercises);
+    }
 }

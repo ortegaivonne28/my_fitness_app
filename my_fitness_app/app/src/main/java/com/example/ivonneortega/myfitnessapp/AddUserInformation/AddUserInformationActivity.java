@@ -1,10 +1,16 @@
 package com.example.ivonneortega.myfitnessapp.AddUserInformation;
 
+import android.content.Context;
 import android.content.Intent;
+import android.graphics.Rect;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.MotionEvent;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
+import android.widget.EditText;
 
 import com.example.ivonneortega.myfitnessapp.Data.Day;
 import com.example.ivonneortega.myfitnessapp.Data.Exercise;
@@ -13,6 +19,7 @@ import com.example.ivonneortega.myfitnessapp.Data.User;
 import com.example.ivonneortega.myfitnessapp.Data.Week;
 import com.example.ivonneortega.myfitnessapp.Data.Workout;
 import com.example.ivonneortega.myfitnessapp.DatabaseTableNames;
+import com.example.ivonneortega.myfitnessapp.FitnessDBHelper;
 import com.example.ivonneortega.myfitnessapp.MainActivity;
 import com.example.ivonneortega.myfitnessapp.R;
 import com.google.firebase.auth.FirebaseAuth;
@@ -33,7 +40,7 @@ public class AddUserInformationActivity extends AppCompatActivity
 
     private FirebaseAuth mAuth;
     private HashMap<String, Day> mWorkoutHashMap;
-    private List<String> mListOfDays;
+    private String[] mListOfDays;
     private List<Week> mWeekList;
 
     @Override
@@ -46,18 +53,14 @@ public class AddUserInformationActivity extends AppCompatActivity
                 .replace(R.id.fragment_container,userInfoFragment)
                 .commit();
 
-        mListOfDays = new ArrayList<>();
-        mListOfDays.add("Monday");
-        mListOfDays.add("Tuesday");
-        mListOfDays.add("Wednesday");
-        mListOfDays.add("Thrusday");
-        mListOfDays.add("Friday");
-        mListOfDays.add("Saturday");
-        mListOfDays.add("Sunday");
+        mListOfDays = DatabaseTableNames.LIST_OF_DAYS;
+
         mAuth = FirebaseAuth.getInstance();
 
 
     }
+
+
 
     @Override
     public void addUser(String name, String lastName, int age, float weight, float weightGoal) {
@@ -66,6 +69,10 @@ public class AddUserInformationActivity extends AppCompatActivity
         FirebaseUser currentUser = mAuth.getCurrentUser();
         User current = new User(currentUser.getUid(),currentUser.getEmail(),name,lastName,null,weight,weightGoal,8);
         myRef.push().setValue(current);
+
+        FitnessDBHelper db = FitnessDBHelper.getInstance(this);
+        long id = db.insertUserInformation(currentUser.getUid(),name,currentUser.getEmail(),weight,weightGoal,age);
+        System.out.println(id);
 
         mWorkoutHashMap = new HashMap<>();
         mWeekList = new ArrayList<>();
@@ -91,8 +98,16 @@ public class AddUserInformationActivity extends AppCompatActivity
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference(DatabaseTableNames.ROUTINES);
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        routines.setId(currentUser.getUid());
+        routines.setUserId(currentUser.getUid());
+
+        FitnessDBHelper db = FitnessDBHelper.getInstance(this);
+        routines = db.insertRoutine(routines);
+
         myRef.push().setValue(routines);
+
+
+
+
         startActivity(new Intent(AddUserInformationActivity.this, MainActivity.class));
 //        SeeRoutinesFragment userInfoFragment = SeeRoutinesFragment.newInstance();
 //        getSupportFragmentManager().beginTransaction()
@@ -101,9 +116,13 @@ public class AddUserInformationActivity extends AppCompatActivity
     }
 
     @Override
+    public void skip() {
+        startActivity(new Intent(AddUserInformationActivity.this, MainActivity.class));
+    }
+
+    @Override
     public void changeDay(String day, Workout workout, String currentDay) {
-        Day day_aux = new Day(workout);
-        mWorkoutHashMap.put(currentDay,day_aux);
+       insertDay(workout,currentDay);
         Day currentDayObject = mWorkoutHashMap.get(day);
         AddWeekWorkoutFragment userInfoFragment = AddWeekWorkoutFragment.newInstance(day,currentDayObject);
         getSupportFragmentManager().beginTransaction()
@@ -111,15 +130,23 @@ public class AddUserInformationActivity extends AppCompatActivity
                 .commit();
     }
 
+    public void insertDay(Workout workout,String currentDay)
+    {
+        Day day_aux = new Day(workout);
+        mWorkoutHashMap.put(currentDay,day_aux);
+    }
     @Override
-    public void clickedOnFab() {
+    public void clickedOnFab(String lastDay, Workout lastWorkout) {
         boolean isValid=true;
+
+        insertDay(lastWorkout,lastDay);
         String day="Monday";
         Workout workout=new Workout();
         int num=0;
         for(int i=0;i<mWorkoutHashMap.size();i++)
         {
-            day = mListOfDays.get(i);
+            day = mListOfDays[i];
+            System.out.println("CLICKED ON FAB: "+day);
             workout = mWorkoutHashMap.get(day).getWorkout();
             if(workout.getNameOfWorkout()==null || workout.getExercises().size()<=0) {
                 isValid = false;

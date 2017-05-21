@@ -9,11 +9,19 @@ import java.util.List;
 
 public class Workout {
 
-    long mId;
-    String mNameOfWorkout;
-    List<Exercise> mExercises;
+    private String mId, mDayId;
+    private String mNameOfWorkout;
+    private List<Exercise> mExercises;
 
-    public Workout(long id, String nameOfWorkout, List<Exercise> exercises) {
+    public String getDayId() {
+        return mDayId;
+    }
+
+    public void setDayId(String dayId) {
+        mDayId = dayId;
+    }
+
+    public Workout(String id, String nameOfWorkout, List<Exercise> exercises) {
         mId = id;
         mNameOfWorkout = nameOfWorkout;
         mExercises = exercises;
@@ -24,11 +32,11 @@ public class Workout {
         mExercises = new ArrayList<>();
     }
 
-    public long getId() {
+    public String getId() {
         return mId;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         mId = id;
     }
 

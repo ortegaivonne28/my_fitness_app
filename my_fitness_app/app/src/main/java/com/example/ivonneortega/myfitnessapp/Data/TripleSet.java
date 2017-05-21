@@ -9,11 +9,11 @@ import java.util.List;
 
 public class TripleSet extends Exercise {
 
-    int mSets, mRepsFirstExercise, mRepsSecondExercise, mRepsThirdExercise;
-    String mNameOne, mNameTwo, mNameThree;
-    List<Repetition> mRepetitionsFirst;
-    List<Repetition> mRepetitionsSecond;
-    List<Repetition> mRepetitionsThird;
+    private int mSets, mRepsFirstExercise, mRepsSecondExercise, mRepsThirdExercise;
+    private String mNameOne, mNameTwo, mNameThree;
+    private List<Repetition> mRepetitionsFirst;
+    private List<Repetition> mRepetitionsSecond;
+    private List<Repetition> mRepetitionsThird;
 
     public TripleSet(int sets, int repsFirstExercise, int repsSecondExercise, int repsThirdExercise) {
         mSets = sets;

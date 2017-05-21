@@ -8,20 +8,31 @@ import okhttp3.Challenge;
 
 public class Day {
 
-    private long mId;
+    private String mId, mWeekId;
     private Workout mWorkout;
     private Challenges mChallenge;
     private Cardio mCardio;
     private int mWaterIntake;
     private float mWeight;
 
-    public Day(long id, Workout workout, Challenges challenge, Cardio cardio, int waterIntake, float weight) {
+    public String getWeekId() {
+        return mWeekId;
+    }
+
+    public void setWeekId(String weekId) {
+        mWeekId = weekId;
+    }
+
+    public Day(String id, Workout workout, Challenges challenge, Cardio cardio, int waterIntake, float weight) {
         mId = id;
         mWorkout = workout;
         mChallenge = challenge;
         mCardio = cardio;
         mWaterIntake = waterIntake;
         mWeight = weight;
+    }
+
+    public Day() {
     }
 
     public Day(Workout workout) {
@@ -32,11 +43,11 @@ public class Day {
         mWeight = 0;
     }
 
-    public long getId() {
+    public String getId() {
         return mId;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         mId = id;
     }
 

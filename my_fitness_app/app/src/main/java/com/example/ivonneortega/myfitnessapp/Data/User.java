@@ -1,6 +1,7 @@
 package com.example.ivonneortega.myfitnessapp.Data;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -16,6 +17,7 @@ public class User {
     private List<Long> mFriends;
     private List<Routines> mRoutines;
     private List<Challenges> mChallenges;
+    private HashMap<String, Workout> mWorkoutHashMap;
 
     public User() {
     }
@@ -32,6 +34,7 @@ public class User {
         mFriends = new ArrayList<>();
         mRoutines = new ArrayList<>();
         mChallenges = new ArrayList<>();
+        mWorkoutHashMap =new HashMap<>();
     }
 
     public String getId() {

@@ -6,8 +6,8 @@ package com.example.ivonneortega.myfitnessapp.Data;
 
 public class Repetition {
 
-    int mReps;
-    int mWeight;
+    private int mReps;
+    private int mWeight;
 
     public Repetition(int reps, int weight) {
         mReps = reps;

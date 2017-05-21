@@ -31,7 +31,7 @@ implements Week_RecyclerView.RecyclerViewInterface{
     public static final String LIST = "list";
     private FloatingActionButton mFloatingActionButton;
     private Routines mRoutines;
-    private TextView mTitle, mDuration;
+    private TextView mTitle, mDuration, mSkip;
 
     public AddRoutineFragment() {
         // Required empty public constructor
@@ -78,6 +78,14 @@ implements Week_RecyclerView.RecyclerViewInterface{
         mFloatingActionButton = (FloatingActionButton) view.findViewById(R.id.fab);
         mDuration = (TextView) view.findViewById(R.id.routine_duration);
         mTitle = (TextView) view.findViewById(R.id.routine_title);
+        mSkip = (TextView) view.findViewById(R.id.skip);
+
+        mSkip.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.skip();
+            }
+        });
 
 
         mFloatingActionButton.setOnClickListener(new View.OnClickListener() {
@@ -87,11 +95,13 @@ implements Week_RecyclerView.RecyclerViewInterface{
                     mTitle.setError("Please add routine title");
                 else
                 {
-                    mRoutines.setName(mTitle.toString());
+                    mRoutines.setName(mTitle.getText().toString());
                     mListener.saveRoutine(mRoutines);
                 }
             }
         });
+
+
     }
 
     public void onButtonPressed(Uri uri) {
@@ -127,6 +137,7 @@ implements Week_RecyclerView.RecyclerViewInterface{
         // TODO: Update argument type and name
         void AddWeekToRoutine();
         void saveRoutine(Routines routines);
+        void skip();
     }
 }
 

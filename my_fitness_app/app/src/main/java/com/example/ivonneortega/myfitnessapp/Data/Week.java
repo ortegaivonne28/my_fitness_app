@@ -9,15 +9,23 @@ import java.util.List;
 
 public class Week {
 
-    long mId;
-    HashMap<String, Day> mDayHashMap;
+    private String mId, mRoutineId;
+    private HashMap<String, Day> mDayHashMap;
+
+    public String getRoutineId() {
+        return mRoutineId;
+    }
+
+    public void setRoutineId(String routineId) {
+        mRoutineId = routineId;
+    }
 
     public Week() {
         long mId = -1;
         mDayHashMap = new HashMap<>();
     }
 
-    public Week(long id, HashMap dayList) {
+    public Week(String id, HashMap dayList) {
         mId = id;
         mDayHashMap = dayList;
     }
@@ -26,11 +34,11 @@ public class Week {
         mDayHashMap = dayHashMap;
     }
 
-    public long getId() {
+    public String getId() {
         return mId;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         mId = id;
     }
 

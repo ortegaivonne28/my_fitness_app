@@ -9,6 +9,7 @@ import java.util.List;
 public class Routines {
 
     private String mId;
+    private String mUserId;
     private String mName;
     private int mHowLong;
     private List<Week> mWeeks;
@@ -24,6 +25,14 @@ public class Routines {
         mName = name;
         mHowLong = howLong;
         mWeeks = weeks;
+    }
+
+    public String getUserId() {
+        return mUserId;
+    }
+
+    public void setUserId(String userId) {
+        mUserId = userId;
     }
 
     public Routines() {

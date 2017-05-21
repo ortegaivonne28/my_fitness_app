@@ -101,7 +101,7 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
 
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext(),LinearLayoutManager.VERTICAL,false));
-        mAdapter = new ExerciseRecyclerViewAdapter(mList);
+        mAdapter = new ExerciseRecyclerViewAdapter(mList, ExerciseRecyclerViewAdapter.TYPE_USER_CREATING);
         mRecyclerView.setAdapter(mAdapter);
 
 
@@ -245,7 +245,7 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
                     mRecyclerView.setVisibility(View.VISIBLE);
                 break;
             case R.id.fab:
-                mListener.clickedOnFab();
+                mListener.clickedOnFab(mDay,mWorkout);
                 break;
         }
     }
@@ -254,7 +254,7 @@ public class AddWeekWorkoutFragment extends Fragment implements View.OnClickList
     public interface addWeekWorkoutInterface {
         // TODO: Update argument type and name
         void changeDay(String day, Workout workout, String currentDay);
-        void clickedOnFab();
+        void clickedOnFab(String day, Workout workout);
     }
 
     public interface getList{

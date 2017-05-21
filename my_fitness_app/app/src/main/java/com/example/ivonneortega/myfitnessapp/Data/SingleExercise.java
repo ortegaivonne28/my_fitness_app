@@ -9,8 +9,8 @@ import java.util.List;
 
 public class SingleExercise extends Exercise {
 
-    int mSets, mReps;
-    List<Repetition> mRepetitions;
+    private int mSets, mReps;
+    private List<Repetition> mRepetitions;
 
     public SingleExercise(int sets, int reps) {
         super();

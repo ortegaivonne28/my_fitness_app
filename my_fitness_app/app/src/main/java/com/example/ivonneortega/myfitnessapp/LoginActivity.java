@@ -47,7 +47,6 @@ public class LoginActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
 
 
-
         // Configure Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
                 .requestIdToken(getString(R.string.default_web_client_id))
@@ -74,79 +73,42 @@ public class LoginActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser!=null)
         {
-            isInDatabase();
-//            startActivity(new Intent(LoginActivity.this,MainActivity.class));
+            isInDatabase(currentUser);
         }
 
     }
 
-    public void isInDatabase()
+    public void isInDatabase(FirebaseUser user)
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
         final DatabaseReference myRef = database.getReference("users");
-        final FirebaseUser currentUser = mAuth.getCurrentUser();
 
-        myRef.orderByChild("id").equalTo(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
+            myRef.orderByChild("id").equalTo(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    if (dataSnapshot.exists()) {
+                        startActivity(new Intent(LoginActivity.this, MainActivity.class));
+                    } else {
+                        startActivity(new Intent(LoginActivity.this, AddUserInformationActivity.class));
+                    }
+
+
                 }
-                else {
-                    startActivity(new Intent(LoginActivity.this,AddUserInformationActivity.class));
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
                 }
+            });
 
-
-            }
-
-                                                                                                  @Override
-                                                                                                  public void onCancelled(DatabaseError databaseError) {
-
-                                                                                                  }
-                                                                                              });
-
-
-//        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot dataSnapshot) {
-//                if (dataSnapshot.hasChild(currentUser.getUid())) {
-//                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
-//                }
-//                else
-//                    startActivity(new Intent(LoginActivity.this,AddUserInformationActivity.class));
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
-
-//        myRef.child(mAuth.getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
-//            @Override
-//            public void onDataChange(DataSnapshot snapshot) {
-//                if (snapshot.exists()) {
-//                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
-//                }
-//                else {
-//                    startActivity(new Intent(LoginActivity.this,AddUserInformationActivity.class));
-//                }
-//            }
-//
-//            @Override
-//            public void onCancelled(DatabaseError databaseError) {
-//
-//            }
-//        });
     }
 
 
 
-            private void signIn() {
+    private void signIn() {
         Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
         startActivityForResult(signInIntent, RC_SIGN_IN);
     }
@@ -160,10 +122,9 @@ public class LoginActivity extends AppCompatActivity
             if (result.isSuccess()) {
                 GoogleSignInAccount account = result.getSignInAccount();
                 firebaseAuthWithGoogle(account);
-//                startActivity(new Intent(LoginActivity.this,MainActivity.class));
-                isInDatabase();
+
             } else {
-                Toast.makeText(LoginActivity.this, "Authentication failed.",
+                Toast.makeText(LoginActivity.this, "Authentication failed, please try again",
                         Toast.LENGTH_SHORT).show();
             }
         }
@@ -178,9 +139,10 @@ public class LoginActivity extends AppCompatActivity
                     public void onComplete(@NonNull Task<AuthResult> task) {
                         if (task.isSuccessful()) {
                             FirebaseUser user = mAuth.getCurrentUser();
+                            isInDatabase(user);
                         } else {
                             // If sign in fails, display a message to the user.
-                            Toast.makeText(LoginActivity.this, "Authentication failed.",
+                            Toast.makeText(LoginActivity.this, "Authentication failed, please try again",
                                     Toast.LENGTH_SHORT).show();
                         }
 

@@ -9,10 +9,10 @@ import java.util.List;
 
 public class SuperSet extends Exercise {
 
-    int mSets, mRepsForFirst, mRepsForSecond;
-    String mNameOne, mNameTwo;
-    List<Repetition> mRepetitionsFirst;
-    List<Repetition> mRepetitionsSecond;
+    private int mSets, mRepsForFirst, mRepsForSecond;
+    private String mNameOne, mNameTwo;
+    private List<Repetition> mRepetitionsFirst;
+    private List<Repetition> mRepetitionsSecond;
 
     public SuperSet(int sets, int repsForFirst, int repsForSecond, String nameOne, String nameTwo, List<Repetition> repetitionsFirst, List<Repetition> repetitionsSecond) {
         mSets = sets;

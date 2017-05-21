@@ -1,18 +1,24 @@
 package com.example.ivonneortega.myfitnessapp.Data;
 
-import android.os.Parcel;
-import android.os.Parcelable;
-
 /**
  * Created by ivonneortega on 5/16/17.
  */
 
 public class Exercise {
 
-    long mId;
-    String mName;
+    private String mId, mWorkoutID;
+    private String mName;
 
-    public Exercise(long id, String name) {
+
+    public String getWorkoutID() {
+        return mWorkoutID;
+    }
+
+    public void setWorkoutID(String workoutID) {
+        mWorkoutID = workoutID;
+    }
+
+    public Exercise(String id, String name) {
         mId = id;
         mName = name;
     }
@@ -21,11 +27,11 @@ public class Exercise {
         mName = null;
     }
 
-    public long getId() {
+    public String getId() {
         return mId;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         mId = id;
     }
 
