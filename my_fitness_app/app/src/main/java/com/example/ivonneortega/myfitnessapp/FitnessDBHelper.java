@@ -278,6 +278,21 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
         return returnId;
     }
 
+    public long insertUserDay(String dayDate, String workoutId, String cardioId)
+    {
+        ContentValues values = new ContentValues();
+        values.put(COL_DAY_DATE, dayDate);
+        values.put(COL_WORKOUT_ID, workoutId);
+        values.put(COL_CARDIO_ID, cardioId);
+        values.put(COL_WEIGHT, 0.0);
+
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        long returnId = db.insert(DAY_USER_NAME, COL_DAY_DATE+" "+COL_WORKOUT_ID+" "+COL_CARDIO_ID+" "+COL_WEIGHT, values);
+        db.close();
+        return returnId;
+    }
+
     public Workout getWorkoutForToday(String today)
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -346,7 +361,7 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
 
         Cursor cursor = db.query(ROUTINES_TABLE_NAME, // a. table
                 null, // b. column names
-                COL_ROUTINE_ID, // c. selections
+                COL_ROUTINE_ID+" = ?", // c. selections
                 new String[]{id}, // d. selections args
                 null, // e. group by
                 null, // f. having
@@ -363,7 +378,7 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
 
                 List<Week> listWeek = new ArrayList<>();
                 listWeek = getWeekById(routines.getId());
-
+                routines.setWeeks(listWeek);
                 return routines;
         }
 
@@ -652,7 +667,7 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
         SQLiteDatabase db = this.getWritableDatabase();
 
 
-        values.put(COL_WORKOUT_NAME, workout.getId());
+        values.put(COL_WORKOUT_NAME, workout.getNameOfWorkout());
         values.put(COL_DAY_ID,id);
         long workoutId =  db.insert(WORKOUT_TABLE_NAME,null,values);
 

@@ -33,5 +33,14 @@
         <item name="colorAccent">@color/colorAccentRoutine</item>
     </style>
 
+    <style name="WorkoutActivityTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimaryWorkout</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkWorkout</item>
+        <item name="colorAccent">@color/colorAccentWorkout</item>
+    </style>
+
+
+
+
 
 </resources>

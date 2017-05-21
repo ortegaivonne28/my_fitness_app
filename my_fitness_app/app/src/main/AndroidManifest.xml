@@ -39,6 +39,11 @@
             android:label="@string/title_activity_exercises_per_days"
             android:theme="@style/AddRoutineActivityTheme">
         </activity>
+        <activity
+            android:name=".Workout.StartWorkoutActivity"
+            android:label="@string/title_activity_start_workout"
+            android:theme="@style/WorkoutActivityTheme">
+        </activity>
     </application>
 
 </manifest>

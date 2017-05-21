@@ -24,12 +24,9 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.example.ivonneortega.myfitnessapp.AddUserInformation.ExerciseRecyclerViewAdapter;
-import com.example.ivonneortega.myfitnessapp.Data.SingleExercise;
-import com.example.ivonneortega.myfitnessapp.Data.SuperSet;
-import com.example.ivonneortega.myfitnessapp.Data.TripleSet;
 import com.example.ivonneortega.myfitnessapp.Data.Workout;
 import com.example.ivonneortega.myfitnessapp.Routines.RoutinesActivity;
+import com.example.ivonneortega.myfitnessapp.Workout.StartWorkoutActivity;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -51,6 +48,7 @@ public class MainActivity extends FragmentActivity
     private ViewPager mViewPager;
     private GoogleApiClient mGoogleApiClient;
     private String[] mListOfDays;
+    private boolean workoutForToday;
 
     public static final String DAY_DATE = "day";
 
@@ -101,7 +99,7 @@ public class MainActivity extends FragmentActivity
 
     public String[] getListOfDays() throws ParseException {
 
-        String[] array = new String[15];
+        String[] array = new String[25];
         DateFormat dateFormat = new SimpleDateFormat("MM/dd");
         Date date = new Date();
         String today = dateFormat.format(date);
@@ -110,7 +108,7 @@ public class MainActivity extends FragmentActivity
         SimpleDateFormat formattedDate = new SimpleDateFormat("MM/dd/yyyy");
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DATE, -7);
-        for(int i=0;i<15;i++)
+        for(int i=0;i<25;i++)
         {
             c.add(Calendar.DATE, 1);
             String newDay = (String)(formattedDate.format(c.getTime()));
@@ -121,32 +119,6 @@ public class MainActivity extends FragmentActivity
             newDay = startDate.toString();
             array[i] = newDay;
         }
-//        c = Calendar.getInstance();
-//        for(int i=8;i>15;i++)
-//        {
-//            c.add(Calendar.DATE, 1);
-//            String newDay = (String)(formattedDate.format(c.getTime()));
-//
-//            DateFormat df = new SimpleDateFormat("MM/dd");
-//            Date startDate = df.parse(newDay);
-//
-//            newDay = startDate.toString().substring(0,10);
-//            array[i] = newDay;
-//        }
-
-//
-//        Date now = new Date();
-//        SimpleDateFormat simpleDateformat = new SimpleDateFormat("E"); // the day of the week abbreviated
-//
-//        simpleDateformat = new SimpleDateFormat("EEEE"); // the day of the week spelled out completely
-//        System.out.println(simpleDateformat.format(now));
-
-
-
-//          // number of days to add
-//
-//        System.out.println("Tomorrows date is " + tomorrow);
-//
     return array;
 
     }
@@ -288,6 +260,7 @@ public class MainActivity extends FragmentActivity
         ImageView mGlass1,mGlass2, mGlass3, mGlass4, mGlass5, mGlass6, mGlass7, mGlass8, mDividerWater;
         TextView mWaterCompleted, mWorkout, mCardio, mChallenges;
         String today;
+        boolean workoutForToday;
 
         public static final String ARG_OBJECT = "object";
 
@@ -331,11 +304,13 @@ public class MainActivity extends FragmentActivity
             if(todayWorkout!=null)
             {
                 mWorkout.setText(todayWorkout.getNameOfWorkout());
+                 workoutForToday = true;
             }
             else {
                 mWorkout.setText("You don't have a workout for today!");
                 view.findViewById(R.id.dividerExtraWorkout).setVisibility(View.VISIBLE);
                 view.findViewById(R.id.workout_set_new_workout).setVisibility(View.VISIBLE);
+                workoutForToday = false;
             }
 
 
@@ -395,12 +370,15 @@ public class MainActivity extends FragmentActivity
                     mDividerWater.setVisibility(View.VISIBLE    );
                     break;
                 case R.id.workout_layout:
-                showDialog();
+                    if(workoutForToday == false)
+                        showDialogToSetRoutineOrAddWorkout();
+                    else
+                        startWorkoutActivity();
                     break;
             }
         }
 
-        public void showDialog()
+        public void showDialogToSetRoutineOrAddWorkout()
         {
             AlertDialog.Builder builder = new AlertDialog.Builder((mGlass2.getContext()));
             builder.setTitle("Set a workout")
@@ -421,5 +399,12 @@ public class MainActivity extends FragmentActivity
             builder.create();
             builder.show();
         }
+
+        public void startWorkoutActivity()
+        {
+            startActivity(new Intent(getActivity(), StartWorkoutActivity.class));
+        }
+
+
     }
 }

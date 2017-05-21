@@ -23,7 +23,10 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.ivonneortega.myfitnessapp.Data.Exercise;
+import com.example.ivonneortega.myfitnessapp.Data.Routines;
+import com.example.ivonneortega.myfitnessapp.Data.Week;
 import com.example.ivonneortega.myfitnessapp.DatabaseTableNames;
+import com.example.ivonneortega.myfitnessapp.FitnessDBHelper;
 import com.example.ivonneortega.myfitnessapp.R;
 
 import java.text.DateFormat;
@@ -39,6 +42,8 @@ public class RoutinesActivity extends AppCompatActivity
         WeeksFragment.WeekFragmentListener{
 
     private RecyclerView mRecyclerview;
+    private String[] mMondaysShort, mMondaysLong;
+    private int[] mCalendarArray;
 
     private View view;
 
@@ -151,33 +156,36 @@ public class RoutinesActivity extends AppCompatActivity
                                         .commit();
                                 break;
                             case 1:
-                                final View update_layout = getLayoutInflater().inflate(
-                                    R.layout.set_routine_start_day, null);
-                                final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
-                                builder.setTitle("Choose a start day");
 
-
-                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                                    public void onClick(DialogInterface dialog, int which) {
-
-                                    }
-                                });
-
-                                Spinner spinner = (Spinner) update_layout.findViewById(R.id.spinner);
-
-                                String items[] = new String[0];
                                 try {
-                                    items = getListOfMondays();
+                                    getListOfMondays();
                                 } catch (ParseException e) {
                                     e.printStackTrace();
                                 }
 
+
+                                final View update_layout = getLayoutInflater().inflate(
+                                    R.layout.set_routine_start_day, null);
+                                final AlertDialog.Builder builder = new AlertDialog.Builder(view.getContext());
+                                builder.setTitle("Choose a start day");
+                                final Spinner spinner = (Spinner) update_layout.findViewById(R.id.spinner);
+
+                                builder.setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        try {
+                                            setRoutine(spinner.getSelectedItemPosition(),id);
+                                        } catch (ParseException e) {
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                });
+
                                 ArrayAdapter<String> adapter = new ArrayAdapter<String>(RoutinesActivity.this,
-                                        android.R.layout.simple_spinner_dropdown_item, items);
+                                        android.R.layout.simple_spinner_dropdown_item, mMondaysShort);
 
                                 adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                                 spinner.setAdapter(adapter);
-                                
+
 
                                 builder.setView(update_layout);
 
@@ -193,12 +201,43 @@ public class RoutinesActivity extends AppCompatActivity
         builder.show();
     }
 
-    public String[] getListOfMondays() throws ParseException {
-        String[] array = new String[10];
+    public void setRoutine(int which, String id) throws ParseException {
+        SimpleDateFormat formattedDate = new SimpleDateFormat("MM/dd/yyyy");
+        Calendar c = Calendar.getInstance();
+
+        c.add(Calendar.DATE,mCalendarArray[which]);
+
+
+        Routines routines = FitnessDBHelper.getInstance(this).getRoutineById(id);
+        for (Week week: routines.getWeeks()) {
+            for (String day: DatabaseTableNames.LIST_OF_DAYS) {
+                String newDay = (String)(formattedDate.format(c.getTime()));
+
+                DateFormat df = new SimpleDateFormat("MM/dd/yyyy");
+                Date startDate = df.parse(newDay);
+
+                newDay = startDate.toString();
+                FitnessDBHelper.getInstance(this).insertUserDay(newDay,week.getDayHashMap().get(day).getWeekId(),null);
+                c.add(Calendar.DATE,1);
+
+                System.out.println(newDay);
+            }
+
+        }
+        Toast.makeText(this, "Routine set as current routine", Toast.LENGTH_SHORT).show();
+    }
+
+
+
+    public void getListOfMondays() throws ParseException {
 
         Date hoy = new Date();
         SimpleDateFormat formattedDate = new SimpleDateFormat("MM/dd/yyyy");
         Calendar c = Calendar.getInstance();
+
+        mCalendarArray = new int[10];
+        mMondaysShort = new String[10];
+        mMondaysLong = new String[10];
 
 //            c.add(Calendar.DATE, 1);
         String newDay = (String)(formattedDate.format(c.getTime()));
@@ -211,8 +250,6 @@ public class RoutinesActivity extends AppCompatActivity
 
         int index=0;
         while(!newDayShort.equalsIgnoreCase(DatabaseTableNames.LIST_OF_DAYS_THREE_LETTERS[index]) && index<7) {
-            System.out.println(newDayShort);
-            System.out.println(DatabaseTableNames.LIST_OF_DAYS_THREE_LETTERS[index]);
             index++;
         }
         index = 7-index;
@@ -221,17 +258,20 @@ public class RoutinesActivity extends AppCompatActivity
         newDay = (String)(formattedDate.format(c.getTime()));
         startDate = df.parse(newDay);
         newDay = startDate.toString();
-        array[0] = newDay.substring(0,10);
+        mMondaysLong[0] = newDay;
+        mCalendarArray[0] = index;
+        mMondaysShort[0] = newDay.substring(0,10);
         for(int i=1;i<10;i++)
         {
             c.add(Calendar.DATE,7);
             newDay = (String)(formattedDate.format(c.getTime()));
             startDate = df.parse(newDay);
             newDay = startDate.toString();
-            array[i] = newDay.substring(0,10);
+            mMondaysLong[i] = newDay;
+            mMondaysShort[i] = newDay.substring(0,10);
+            mCalendarArray[i] = 7;
         }
 
-        return array;
     }
 
 

@@ -19,6 +19,11 @@
     <color name="colorAccentRoutine">#FFD018</color>
     <color name="colorTextSelectedWeek">#E41919</color>
 
+    <color name="colorPrimaryWorkout">#80279E</color>
+    <color name="colorPrimaryDarkWorkout">#641E7C</color>
+    <color name="colorAccentWorkout">#FF7618</color>
+    <color name="colorGradientEndWorkout">#AC13B9</color>
+
 
 
 
