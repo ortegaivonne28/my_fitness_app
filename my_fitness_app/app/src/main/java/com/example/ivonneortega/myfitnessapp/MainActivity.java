@@ -99,7 +99,7 @@ public class MainActivity extends FragmentActivity
 
     public String[] getListOfDays() throws ParseException {
 
-        String[] array = new String[25];
+        String[] array = new String[15];
         DateFormat dateFormat = new SimpleDateFormat("MM/dd");
         Date date = new Date();
         String today = dateFormat.format(date);
@@ -108,7 +108,7 @@ public class MainActivity extends FragmentActivity
         SimpleDateFormat formattedDate = new SimpleDateFormat("MM/dd/yyyy");
         Calendar c = Calendar.getInstance();
         c.add(Calendar.DATE, -7);
-        for(int i=0;i<25;i++)
+        for(int i=0;i<15;i++)
         {
             c.add(Calendar.DATE, 1);
             String newDay = (String)(formattedDate.format(c.getTime()));

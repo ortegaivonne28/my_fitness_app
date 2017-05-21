@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="wrap_content"
+              android:background="@android:color/white"
+              android:orientation="vertical"
+              android:padding="15dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/set"
+        android:text="Set #"
+        android:layout_marginLeft="10dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/number_of_reps_one"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:backgroundTint="@android:color/white"
+            android:nextFocusLeft="@id/exercise_name"
+            android:nextFocusUp="@id/exercise_name"
+            android:hint="Reps Exercise A"/>
+
+        <EditText
+            android:id="@+id/weight_one"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:backgroundTint="@android:color/white"
+            android:nextFocusLeft="@id/exercise_name"
+            android:nextFocusUp="@id/exercise_name"
+            android:hint="Weight Exercise A"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/number_of_reps_two"
+            android:layout_width="0dp"
+            android:backgroundTint="@android:color/white"
+            android:nextFocusLeft="@id/exercise_name"
+            android:nextFocusUp="@id/exercise_name"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:hint="Reps Exercise B"/>
+
+        <EditText
+            android:id="@+id/weight_two"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:backgroundTint="@android:color/white"
+            android:nextFocusLeft="@id/exercise_name"
+            android:nextFocusUp="@id/exercise_name"
+            android:hint="Weight Exercise B"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <EditText
+            android:id="@+id/number_of_reps_three"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:backgroundTint="@android:color/white"
+            android:nextFocusLeft="@id/exercise_name"
+            android:nextFocusUp="@id/exercise_name"
+            android:hint="Reps Exercise C"/>
+
+        <EditText
+            android:id="@+id/weight_three"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_weight="0.5"
+            android:backgroundTint="@android:color/white"
+            android:nextFocusLeft="@id/exercise_name"
+            android:nextFocusUp="@id/exercise_name"
+            android:hint="Weight Exercise C"/>
+
+    </LinearLayout>
+
+
+</LinearLayout>
