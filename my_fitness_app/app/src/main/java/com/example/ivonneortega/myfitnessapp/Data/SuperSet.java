@@ -25,6 +25,7 @@ public class SuperSet extends Exercise {
     }
 
     public SuperSet() {
+        super();
         mSets=0;
         mRepsForFirst=0;
         mRepsForSecond=0;

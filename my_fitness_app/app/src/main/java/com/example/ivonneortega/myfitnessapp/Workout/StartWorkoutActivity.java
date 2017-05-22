@@ -7,20 +7,29 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.LinearSnapHelper;
+import android.support.v7.widget.PagerSnapHelper;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SnapHelper;
 import android.support.v7.widget.Toolbar;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import com.example.ivonneortega.myfitnessapp.Data.Exercise;
+import com.example.ivonneortega.myfitnessapp.Data.SingleExercise;
+import com.example.ivonneortega.myfitnessapp.Data.SuperSet;
+import com.example.ivonneortega.myfitnessapp.Data.TripleSet;
+import com.example.ivonneortega.myfitnessapp.Data.Workout;
 import com.example.ivonneortega.myfitnessapp.FitnessDBHelper;
 import com.example.ivonneortega.myfitnessapp.R;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -31,6 +40,7 @@ public class StartWorkoutActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private WorkoutRecyclerViewAdapter mAdapter;
     private List<Exercise> mExerciseList;
+    private List<Exercise> mExerciseCompleted;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,22 +55,73 @@ public class StartWorkoutActivity extends AppCompatActivity {
             e.printStackTrace();
         }
 
-        System.out.println(mToday);
+        mExerciseCompleted = new ArrayList<>();
+
         mExerciseList = FitnessDBHelper.getInstance(this).getWorkoutForToday(mToday).getExercises();
         mRecyclerView = (RecyclerView) findViewById(R.id.recycler_view);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.VERTICAL,false));
+        mRecyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL,false));
         mAdapter = new WorkoutRecyclerViewAdapter(mExerciseList);
         mRecyclerView.setAdapter(mAdapter);
+
+
+        final FitnessDBHelper db = FitnessDBHelper.getInstance(this);
+        final Workout workout = db.getWorkoutById(mExerciseList.get(0).getWorkoutID());
+
+
+
+        PagerSnapHelper helper = new PagerSnapHelper();
+        helper.attachToRecyclerView(mRecyclerView);
 
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                mExerciseCompleted = mAdapter.getExerciseList();
+
+                if(exerciseCompleted())
+                {
+                    Toast.makeText(StartWorkoutActivity.this, "Workout completed", Toast.LENGTH_SHORT).show();
+                    workout.setExercises(mExerciseCompleted);
+                    db.updateUserDayWorkoutCompleted(mToday,workout);
+                }
+                else
+                {
+                    Toast.makeText(StartWorkoutActivity.this, "You haven't completed your workout", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+    }
+
+    public boolean exerciseCompleted()
+    {
+        for (Exercise exercise: mExerciseCompleted) {
+            if(exercise instanceof SingleExercise)
+            {
+                if(((SingleExercise) exercise).getSets() != exercise.getSetsList().size()) {
+                    System.out.println("SETS: "+((SingleExercise) exercise).getSets());
+                    System.out.println("SIZE: "+exercise.getSetsList().size());
+                    return false;
+                }
+            }
+            if(exercise instanceof SuperSet)
+            {
+                if(((SuperSet) exercise).getSets() != exercise.getSetsList().size()) {
+                    System.out.println("SETS: "+((SuperSet) exercise).getSets());
+                    System.out.println("SIZE: "+ exercise.getSetsList().size());
+                    return false;
+                }
+            }
+            if(exercise instanceof TripleSet)
+            {
+                if(((TripleSet) exercise).getSets() != exercise.getSetsList().size()) {
+                    System.out.println("SETS: "+((TripleSet) exercise).getSets());
+                    System.out.println("SIZE: "+exercise.getSetsList().size());
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public void setToday() throws ParseException {
@@ -92,5 +153,10 @@ public class StartWorkoutActivity extends AppCompatActivity {
 //        }
 //        return super.dispatchTouchEvent( event );
 //    }
+
+    public interface getExerciseListInterface
+    {
+        List<Exercise> getExerciseList();
+    }
 
 }

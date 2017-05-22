@@ -1,5 +1,8 @@
 package com.example.ivonneortega.myfitnessapp.Data;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by ivonneortega on 5/16/17.
  */
@@ -8,7 +11,15 @@ public class Exercise {
 
     private String mId, mWorkoutID;
     private String mName;
+    private List<Sets> mSetsList;
 
+    public List<Sets> getSetsList() {
+        return mSetsList;
+    }
+
+    public void setSetsList(List<Sets> setsList) {
+        mSetsList = setsList;
+    }
 
     public String getWorkoutID() {
         return mWorkoutID;
@@ -25,6 +36,7 @@ public class Exercise {
 
     public Exercise() {
         mName = null;
+        mSetsList = new ArrayList<>();
     }
 
     public String getId() {

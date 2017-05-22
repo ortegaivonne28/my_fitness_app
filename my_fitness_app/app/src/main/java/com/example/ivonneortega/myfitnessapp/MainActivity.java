@@ -1,5 +1,6 @@
 package com.example.ivonneortega.myfitnessapp;
 
+import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
@@ -23,6 +24,7 @@ import android.view.MenuItem;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.ivonneortega.myfitnessapp.Data.Workout;
 import com.example.ivonneortega.myfitnessapp.Routines.RoutinesActivity;
@@ -51,6 +53,7 @@ public class MainActivity extends FragmentActivity
     private boolean workoutForToday;
 
     public static final String DAY_DATE = "day";
+    public static final String TODAY = "mDay";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -220,6 +223,7 @@ public class MainActivity extends FragmentActivity
             Fragment fragment = new DemoObjectFragment();
             Bundle args = new Bundle();
             args.putString(DAY_DATE,mDays[i]);
+            args.putString(TODAY,mDays[6]);
             fragment.setArguments(args);
             return fragment;
         }
@@ -255,12 +259,13 @@ public class MainActivity extends FragmentActivity
      * Fragment that hold the views for each article
      */
     public static class DemoObjectFragment extends Fragment
-    implements View.OnClickListener{
+    implements View.OnClickListener {
 
-        ImageView mGlass1,mGlass2, mGlass3, mGlass4, mGlass5, mGlass6, mGlass7, mGlass8, mDividerWater;
-        TextView mWaterCompleted, mWorkout, mCardio, mChallenges;
-        String today;
-        boolean workoutForToday;
+        ImageView mGlass1, mGlass2, mGlass3, mGlass4, mGlass5, mGlass6, mGlass7, mGlass8, mDividerWater;
+        TextView mWaterCompleted, mWorkout, mCardio, mChallenges, mExtraWorkoutInfo;
+        String mDay, mToday;
+        FitnessDBHelper db;
+        boolean workoutForToday, workoutCompleted;
 
         public static final String ARG_OBJECT = "object";
 
@@ -270,7 +275,8 @@ public class MainActivity extends FragmentActivity
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main_activity, container, false);
             final Bundle args = getArguments();
-            today = args.getString(DAY_DATE);
+            mDay = args.getString(DAY_DATE);
+            mToday = args.getString(TODAY);
             return rootView;
         }
 
@@ -293,20 +299,32 @@ public class MainActivity extends FragmentActivity
             mWorkout = (TextView) view.findViewById(R.id.workout_title);
             mCardio = (TextView) view.findViewById(R.id.cardio_title);
             mChallenges = (TextView) view.findViewById(R.id.challenge_title);
+            mExtraWorkoutInfo = (TextView) view.findViewById(R.id.workout_set_new_workout);
+
+
+            db = FitnessDBHelper.getInstance(mWorkout.getContext());
+            getWaterIntakeForToday();
 
             mGlass1.setOnClickListener(this);
             view.findViewById(R.id.workout_layout).setOnClickListener(this);
 
 
 
-            FitnessDBHelper db = FitnessDBHelper.getInstance(mWorkout.getContext());
-            Workout todayWorkout = db.getWorkoutForToday(today);
-            if(todayWorkout!=null)
-            {
+            Workout todayWorkout = db.getWorkoutForToday(mDay);
+
+            workoutCompleted = false;
+            if (todayWorkout != null) {
                 mWorkout.setText(todayWorkout.getNameOfWorkout());
-                 workoutForToday = true;
-            }
-            else {
+                if (db.isWorkoutCompletedForToday(mDay)) {
+                    view.findViewById(R.id.workout_set_new_workout).setVisibility(View.VISIBLE);
+                    mExtraWorkoutInfo.setText("Workout completed!");
+                    workoutForToday = false;
+                    workoutCompleted = true;
+                } else {
+                    workoutForToday = true;
+                }
+
+            } else {
                 mWorkout.setText("You don't have a workout for today!");
                 view.findViewById(R.id.dividerExtraWorkout).setVisibility(View.VISIBLE);
                 view.findViewById(R.id.workout_set_new_workout).setVisibility(View.VISIBLE);
@@ -314,80 +332,149 @@ public class MainActivity extends FragmentActivity
             }
 
 
-
         }
 
         @Override
         public void onClick(View v) {
-            switch (v.getId())
-            {
+            switch (v.getId()) {
                 case R.id.glass1:
                     mGlass1.setClickable(false);
                     mGlass1.setImageResource(R.drawable.glass_full);
                     mGlass2.setImageResource(R.drawable.glass_add);
                     mGlass2.setOnClickListener(this);
-                break;
+                    db.updateWaterIntakeForToday(mToday,1);
+                    break;
                 case R.id.glass2:
                     mGlass2.setClickable(false);
                     mGlass2.setImageResource(R.drawable.glass_full);
                     mGlass3.setImageResource(R.drawable.glass_add);
                     mGlass3.setOnClickListener(this);
+                    db.updateWaterIntakeForToday(mToday,2);
                     break;
                 case R.id.glass3:
                     mGlass3.setClickable(false);
                     mGlass3.setImageResource(R.drawable.glass_full);
                     mGlass4.setImageResource(R.drawable.glass_add);
                     mGlass4.setOnClickListener(this);
+                    db.updateWaterIntakeForToday(mToday,3);
                     break;
                 case R.id.glass4:
                     mGlass4.setClickable(false);
                     mGlass4.setImageResource(R.drawable.glass_full);
                     mGlass5.setImageResource(R.drawable.glass_add);
                     mGlass5.setOnClickListener(this);
+                    db.updateWaterIntakeForToday(mToday,4);
                     break;
                 case R.id.glass5:
                     mGlass5.setClickable(false);
                     mGlass5.setImageResource(R.drawable.glass_full);
                     mGlass6.setImageResource(R.drawable.glass_add);
                     mGlass6.setOnClickListener(this);
+                    db.updateWaterIntakeForToday(mToday,5);
                     break;
                 case R.id.glass6:
                     mGlass6.setClickable(false);
                     mGlass6.setImageResource(R.drawable.glass_full);
                     mGlass7.setImageResource(R.drawable.glass_add);
                     mGlass7.setOnClickListener(this);
+                    db.updateWaterIntakeForToday(mToday,6);
                     break;
                 case R.id.glass7:
                     mGlass7.setClickable(false);
                     mGlass7.setImageResource(R.drawable.glass_full);
                     mGlass8.setImageResource(R.drawable.glass_add);
                     mGlass8.setOnClickListener(this);
+                    db.updateWaterIntakeForToday(mToday,7);
                     break;
                 case R.id.glass8:
                     mGlass8.setClickable(false);
                     mGlass8.setImageResource(R.drawable.glass_full);
                     mWaterCompleted.setVisibility(View.VISIBLE);
-                    mDividerWater.setVisibility(View.VISIBLE    );
+                    mDividerWater.setVisibility(View.VISIBLE);
+                    db.updateWaterIntakeForToday(mToday,8);
                     break;
                 case R.id.workout_layout:
-                    if(workoutForToday == false)
-                        showDialogToSetRoutineOrAddWorkout();
-                    else
-                        startWorkoutActivity();
+                    if (mToday.equalsIgnoreCase(mDay)) {
+                        if (workoutForToday == false)
+                            showDialogToSetRoutineOrAddWorkout();
+                        else
+                            startWorkoutActivity();
+                    } else {
+                        Toast.makeText(mDividerWater.getContext(), "You can only do today's workout", Toast.LENGTH_SHORT).show();
+                    }
+
                     break;
             }
         }
 
-        public void showDialogToSetRoutineOrAddWorkout()
+        public void getWaterIntakeForToday()
         {
+            int water = db.getWaterIntakeForToday(mToday);
+            switch (water)
+            {
+                case 1:
+                    mGlass1.setClickable(false);
+                    mGlass1.setImageResource(R.drawable.glass_full);
+                    mGlass2.setImageResource(R.drawable.glass_add);
+                    mGlass2.setOnClickListener(this);
+                    break;
+                case 2:
+                    mGlass2.setClickable(false);
+                    mGlass2.setImageResource(R.drawable.glass_full);
+                    mGlass3.setImageResource(R.drawable.glass_add);
+                    mGlass3.setOnClickListener(this);
+                    break;
+                case 3:
+                    mGlass3.setClickable(false);
+                    mGlass3.setImageResource(R.drawable.glass_full);
+                    mGlass4.setImageResource(R.drawable.glass_add);
+                    mGlass4.setOnClickListener(this);
+                    break;
+                case 4:
+                    mGlass4.setClickable(false);
+                    mGlass4.setImageResource(R.drawable.glass_full);
+                    mGlass5.setImageResource(R.drawable.glass_add);
+                    mGlass5.setOnClickListener(this);
+                    break;
+                case 5:
+                    mGlass5.setClickable(false);
+                    mGlass5.setImageResource(R.drawable.glass_full);
+                    mGlass6.setImageResource(R.drawable.glass_add);
+                    mGlass6.setOnClickListener(this);
+                    break;
+                case 6:
+                    mGlass6.setClickable(false);
+                    mGlass6.setImageResource(R.drawable.glass_full);
+                    mGlass7.setImageResource(R.drawable.glass_add);
+                    mGlass7.setOnClickListener(this);
+                    break;
+                case 7:
+                    mGlass7.setClickable(false);
+                    mGlass7.setImageResource(R.drawable.glass_full);
+                    mGlass8.setImageResource(R.drawable.glass_add);
+                    mGlass8.setOnClickListener(this);
+                    break;
+                case 8:
+                    mGlass8.setClickable(false);
+                    mGlass8.setImageResource(R.drawable.glass_full);
+                    mWaterCompleted.setVisibility(View.VISIBLE);
+                    mDividerWater.setVisibility(View.VISIBLE);
+                    break;
+
+            }
+        }
+
+        public void showDialogToSetRoutineOrAddWorkout() {
             AlertDialog.Builder builder = new AlertDialog.Builder((mGlass2.getContext()));
             builder.setTitle("Set a workout")
                     .setItems(R.array.alertDialogSetWorkoutOrRoutine, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
-                            switch (which)
-                            {
+                            switch (which) {
                                 case 0:
-                                    startActivity(new Intent(getActivity(),RoutinesActivity.class));
+                                    if (workoutCompleted) {
+                                        showSecondAlertDialog();
+                                    } else
+                                        startActivity(new Intent(getActivity(), RoutinesActivity.class));
                                     break;
 
                                 case 1:
@@ -400,11 +487,29 @@ public class MainActivity extends FragmentActivity
             builder.show();
         }
 
-        public void startWorkoutActivity()
-        {
+        public void startWorkoutActivity() {
             startActivity(new Intent(getActivity(), StartWorkoutActivity.class));
         }
 
-
+        public void showSecondAlertDialog() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setMessage("Are you sure you want to set a new workout for today? " +
+                    "This will override today's workout")
+                    .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            startActivity(new Intent(getActivity(), RoutinesActivity.class));
+                        }
+                    })
+                    .setNegativeButton("No", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            builder.create();
+            builder.show();
+        }
     }
+
+
 }

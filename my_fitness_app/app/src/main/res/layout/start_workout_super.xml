@@ -2,16 +2,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@android:color/white"
+              android:focusable="true"
+              android:focusableInTouchMode="true"
               android:orientation="vertical"
               android:padding="15dp">
 
     <TextView
+        android:id="@+id/set"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/set"
-        android:text="Set #"
-        android:layout_marginLeft="10dp"/>
+        android:layout_marginLeft="10dp"
+        android:text="Set #"/>
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -20,12 +22,14 @@
         <EditText
             android:id="@+id/number_of_reps_one"
             android:layout_width="0dp"
-            android:backgroundTint="@android:color/white"
-            android:nextFocusLeft="@id/exercise_name"
-            android:nextFocusUp="@id/exercise_name"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
-            android:hint="Reps Exercise A"/>
+            android:backgroundTint="@android:color/white"
+            android:clickable="false"
+            android:hint="Reps Exercise A"
+            android:inputType="number"
+            android:nextFocusLeft="@id/exercise_name"
+            android:nextFocusUp="@id/exercise_name"/>
 
         <EditText
             android:id="@+id/weight_one"
@@ -33,9 +37,11 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:backgroundTint="@android:color/white"
+            android:clickable="false"
+            android:hint="Weight Exercise A"
+            android:inputType="numberDecimal"
             android:nextFocusLeft="@id/exercise_name"
-            android:nextFocusUp="@id/exercise_name"
-            android:hint="Weight Exercise A"/>
+            android:nextFocusUp="@id/exercise_name"/>
 
     </LinearLayout>
 
@@ -50,9 +56,11 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:backgroundTint="@android:color/white"
+            android:clickable="false"
+            android:hint="Reps Exercise B"
+            android:inputType="number"
             android:nextFocusLeft="@id/exercise_name"
-            android:nextFocusUp="@id/exercise_name"
-            android:hint="Reps Exercise B"/>
+            android:nextFocusUp="@id/exercise_name"/>
 
         <EditText
             android:id="@+id/weight_two"
@@ -60,9 +68,11 @@
             android:layout_height="match_parent"
             android:layout_weight="0.5"
             android:backgroundTint="@android:color/white"
+            android:clickable="false"
+            android:hint="Weight Exercise B"
+            android:inputType="numberDecimal"
             android:nextFocusLeft="@id/exercise_name"
-            android:nextFocusUp="@id/exercise_name"
-            android:hint="Weight Exercise B"/>
+            android:nextFocusUp="@id/exercise_name"/>
 
     </LinearLayout>
 

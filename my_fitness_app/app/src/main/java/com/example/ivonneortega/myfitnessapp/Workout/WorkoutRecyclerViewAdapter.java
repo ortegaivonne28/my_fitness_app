@@ -9,6 +9,7 @@ import android.widget.TextView;
 
 import com.example.ivonneortega.myfitnessapp.AddUserInformation.ExerciseRecyclerViewAdapter;
 import com.example.ivonneortega.myfitnessapp.Data.Exercise;
+import com.example.ivonneortega.myfitnessapp.Data.Sets;
 import com.example.ivonneortega.myfitnessapp.Data.SingleExercise;
 import com.example.ivonneortega.myfitnessapp.Data.SuperSet;
 import com.example.ivonneortega.myfitnessapp.Data.TripleSet;
@@ -20,7 +21,8 @@ import java.util.List;
  * Created by ivonneortega on 5/21/17.
  */
 
-public class WorkoutRecyclerViewAdapter extends RecyclerView.Adapter<WorkoutRecyclerViewAdapter.WorkoutViewHolder> {
+public class WorkoutRecyclerViewAdapter extends RecyclerView.Adapter<WorkoutRecyclerViewAdapter.WorkoutViewHolder>
+implements StartWorkoutExerciseRecyclerViewAdapter.updateExercise, StartWorkoutActivity.getExerciseListInterface{
 
     List<Exercise> mExerciseList;
 
@@ -37,6 +39,10 @@ public class WorkoutRecyclerViewAdapter extends RecyclerView.Adapter<WorkoutRecy
 
     @Override
     public void onBindViewHolder(WorkoutViewHolder holder, int position) {
+
+        int pos = position+1;
+
+        holder.mExerciseNumber.setText("Exercise #"+pos);
         if(mExerciseList.get(position) instanceof SingleExercise)
         {
             SingleExercise singleExercise = (SingleExercise) mExerciseList.get(position);
@@ -62,12 +68,24 @@ public class WorkoutRecyclerViewAdapter extends RecyclerView.Adapter<WorkoutRecy
             holder.mExerciseThree.setText("Exercise C: "+tripleSet.getNameThree());
         }
         holder.mRecyclerView.setLayoutManager(new LinearLayoutManager(holder.mRecyclerView.getContext(),LinearLayoutManager.VERTICAL,false));
-        holder.mRecyclerView.setAdapter(new StartWorkoutExerciseRecyclerViewAdapter(mExerciseList.get(position)));
+        holder.mRecyclerView.setAdapter(new StartWorkoutExerciseRecyclerViewAdapter(mExerciseList.get(position),this,position));
     }
+
+
 
     @Override
     public int getItemCount() {
         return mExerciseList.size();
+    }
+
+    @Override
+    public void updateExerciseSetList(List<Sets> mList, int position) {
+        mExerciseList.get(position).setSetsList(mList);
+    }
+
+    @Override
+    public List<Exercise> getExerciseList() {
+        return mExerciseList;
     }
 
     public class WorkoutViewHolder extends RecyclerView.ViewHolder{
@@ -76,6 +94,7 @@ public class WorkoutRecyclerViewAdapter extends RecyclerView.Adapter<WorkoutRecy
         public TextView mExerciseTwo;
         public TextView mExerciseThree;
         public RecyclerView mRecyclerView;
+        public TextView mExerciseNumber;
 
         public WorkoutViewHolder(View itemView) {
             super(itemView);
@@ -83,6 +102,7 @@ public class WorkoutRecyclerViewAdapter extends RecyclerView.Adapter<WorkoutRecy
             mExerciseTwo = (TextView) itemView.findViewById(R.id.exercise_name_two);
             mExerciseThree = (TextView) itemView.findViewById(R.id.exercise_name_three);
             mRecyclerView = (RecyclerView) itemView.findViewById(R.id.recycler_view);
+            mExerciseNumber = (TextView) itemView.findViewById(R.id.exercise_number);
 
         }
     }

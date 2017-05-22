@@ -2,7 +2,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:background="@android:color/white"
               android:focusable="true"
               android:focusableInTouchMode="true"
               android:orientation="vertical"
@@ -25,6 +24,8 @@
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="0.5"
+            android:inputType="number"
+            android:clickable="false"
             android:backgroundTint="@android:color/white"
             android:hint="Reps Exercise A"
             android:nextFocusLeft="@id/exercise_name"
@@ -37,6 +38,8 @@
             android:layout_weight="0.5"
             android:backgroundTint="@android:color/white"
             android:hint="Weight Exercise A"
+            android:clickable="false"
+            android:inputType="numberDecimal"
             android:nextFocusLeft="@id/exercise_name"
             android:nextFocusUp="@id/exercise_name"/>
 

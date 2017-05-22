@@ -39,6 +39,7 @@ public class TripleSet extends Exercise {
     }
 
     public TripleSet() {
+        super();
         mSets=0;
         mRepsFirstExercise=0;
         mRepsSecondExercise=0;

@@ -217,7 +217,7 @@ public class RoutinesActivity extends AppCompatActivity
                 Date startDate = df.parse(newDay);
 
                 newDay = startDate.toString();
-                FitnessDBHelper.getInstance(this).insertUserDay(newDay,week.getDayHashMap().get(day).getWeekId(),null);
+                FitnessDBHelper.getInstance(this).insertUserDay(newDay,week.getDayHashMap().get(day).getWorkout().getId(),null);
                 c.add(Calendar.DATE,1);
 
                 System.out.println(newDay);
