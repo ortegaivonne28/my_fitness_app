@@ -17,7 +17,7 @@ public class User {
     private List<Long> mFriends;
     private List<Routines> mRoutines;
     private List<Challenges> mChallenges;
-    private HashMap<String, Workout> mWorkoutHashMap;
+    private List<Workout> mWorkouts;
 
     public User() {
     }
@@ -34,7 +34,7 @@ public class User {
         mFriends = new ArrayList<>();
         mRoutines = new ArrayList<>();
         mChallenges = new ArrayList<>();
-        mWorkoutHashMap =new HashMap<>();
+        mWorkouts =new ArrayList<>();
     }
 
     public String getId() {
@@ -123,5 +123,13 @@ public class User {
 
     public void setChallenges(List<Challenges> challenges) {
         mChallenges = challenges;
+    }
+
+    public List<Workout> getWorkouts() {
+        return mWorkouts;
+    }
+
+    public void setWorkouts(List<Workout> workouts) {
+        mWorkouts = workouts;
     }
 }

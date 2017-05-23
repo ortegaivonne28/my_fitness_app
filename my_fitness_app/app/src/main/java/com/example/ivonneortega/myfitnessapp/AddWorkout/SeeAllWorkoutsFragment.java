@@ -112,12 +112,14 @@ public class SeeAllWorkoutsFragment extends Fragment implements SeeAllWorkoutsRe
     @Override
     public void deleteOneWorkout(String id) {
         db.deleteOneWorkout(id);
+        mListener.updateWorkouts();
     }
 
 
     public interface SeeAllWorkoutsInterface {
         // TODO: Update argument type and name
         void clickedOnWorkout(String id);
+        void updateWorkouts();
     }
 
 

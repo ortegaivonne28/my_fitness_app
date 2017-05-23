@@ -13,17 +13,16 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/MainActivityTheme">
-            <intent-filter>
-                <category android:name="android.intent.category.LAUNCHER"/>
-
-                <action android:name="android.intent.action.MAIN"/>
-            </intent-filter>
         </activity>
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/LoginActivityTheme">
+            <intent-filter>
+                <category android:name="android.intent.category.LAUNCHER"/>
 
+                <action android:name="android.intent.action.MAIN"/>
+            </intent-filter>
         </activity>
         <activity
             android:name=".AddUserInformation.AddUserInformationActivity"

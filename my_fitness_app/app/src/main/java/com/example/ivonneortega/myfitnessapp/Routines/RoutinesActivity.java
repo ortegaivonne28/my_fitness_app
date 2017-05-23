@@ -369,7 +369,7 @@ public class RoutinesActivity extends AppCompatActivity
     @Override
     public void saveRoutine(Routines routines) {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference(DatabaseTableNames.ROUTINES);
+        DatabaseReference myRef = database.getReference(DatabaseTableNames.ROUTINES);
         FirebaseUser currentUser = mAuth.getCurrentUser();
         routines.setUserId(currentUser.getUid());
 

@@ -134,9 +134,6 @@ public class AddWorkoutActivity extends AppCompatActivity
     public void saveWorkout()
     {
 
-
-//        myRef.push().setValue(routines);
-
         mWorkout = mListener.getWorkoutFromFragment();
         if(mWorkout==null)
             Toast.makeText(AddWorkoutActivity.this, "Please complete the exercise", Toast.LENGTH_SHORT).show();
@@ -151,20 +148,31 @@ public class AddWorkoutActivity extends AppCompatActivity
 
     public void saveToFirebase()
     {
-        List<Workout> workoutList = db.getUserWorkouts();
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final List<Workout> workoutList = db.getUserWorkouts();
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
         FirebaseUser currentUser = mAuth.getCurrentUser();
-        final DatabaseReference myRef = database.getReference(DatabaseTableNames.ROUTINES);
-        System.out.println("SAVING INTO FIREBASE");
-        myRef.orderByChild("userId").equalTo("HjyyS2p3WlgsBubDWavCp6K5DsQ2").addListenerForSingleValueEvent(new ValueEventListener() {
+        final DatabaseReference myRef = database.getReference(DatabaseTableNames.USER);
+        myRef.orderByChild("id").equalTo(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.exists()) {
-                    System.out.println("Exits");
-                } else {
-                    System.out.println("Doesnt exits");
+
+                boolean exit=true;
+                int counter = 1;
+                String key = dataSnapshot.getValue().toString();
+                while (exit)
+                {
+                    if(key.charAt(counter)=='=')
+                        exit = false;
+                    else
+                        counter++;
                 }
 
+                key = key.substring(1,counter);
+                System.out.println(key);
+
+
+                myRef.child(key).child("workouts").setValue(workoutList);
+//                searchUsers.child(newKey).child("mRatings").child("friendlySUM").setValue(friendSUM);
 
             }
 
@@ -243,6 +251,11 @@ public class AddWorkoutActivity extends AppCompatActivity
 
         fab.setImageResource(R.mipmap.ic_done_white_24dp);
         whichFab = FAB_EDIT_WORKOUT;
+    }
+
+    @Override
+    public void updateWorkouts() {
+        saveToFirebase();
     }
 
 //    @Override
