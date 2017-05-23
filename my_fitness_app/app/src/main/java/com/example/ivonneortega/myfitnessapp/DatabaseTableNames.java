@@ -14,6 +14,9 @@ public interface DatabaseTableNames {
     public static final String SUPER = "super";
     public static final String TRIPLE = "triple";
 
+    public static final String CHALLENGE_USER = "user";
+    public static final String CHALLENGE_FRIEND = "friend";
+
     public static final String[] LIST_OF_DAYS = new String[]{"Monday","Tuesday","Wednesday","Thrusday","Friday","Saturday","Sunday"};
     public static final String[] LIST_OF_DAYS_THREE_LETTERS = new String[]{"Mon","Tue","Wed","Thu","Fri","Sat","Sun","Mon"};
 

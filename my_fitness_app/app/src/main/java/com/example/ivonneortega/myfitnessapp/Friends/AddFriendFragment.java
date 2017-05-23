@@ -14,10 +14,14 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.TextView;
 
 import com.example.ivonneortega.myfitnessapp.AddUserInformation.AddUserInformationActivity;
+import com.example.ivonneortega.myfitnessapp.Data.Friend;
 import com.example.ivonneortega.myfitnessapp.Data.User;
+import com.example.ivonneortega.myfitnessapp.FitnessDBHelper;
 import com.example.ivonneortega.myfitnessapp.LoginActivity;
 import com.example.ivonneortega.myfitnessapp.MainActivity;
 import com.example.ivonneortega.myfitnessapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -32,6 +36,8 @@ public class AddFriendFragment extends Fragment {
     private AddFriendInterface mListener;
     private SearchView mSearch;
     private TextView mFriendName;
+    private Friend mFriend;
+    private View mFriendLayout;
 
     public AddFriendFragment() {
         // Required empty public constructor
@@ -39,7 +45,7 @@ public class AddFriendFragment extends Fragment {
 
 
 
-    public static AddFriendFragment newInstance(String param1, String param2) {
+    public static AddFriendFragment newInstance() {
         AddFriendFragment fragment = new AddFriendFragment();
         Bundle args = new Bundle();
 
@@ -63,9 +69,9 @@ public class AddFriendFragment extends Fragment {
     }
 
 
-    public void onButtonPressed(String id) {
+    public void onButtonPressed(Friend friend) {
         if (mListener != null) {
-            mListener.addFriend(id);
+            mListener.addFriend(friend);
         }
     }
 
@@ -75,53 +81,92 @@ public class AddFriendFragment extends Fragment {
 
         mSearch = (SearchView) view.findViewById(R.id.seatch);
         mFriendName = (TextView) view.findViewById(R.id.friend_name);
+        mFriendName.setVisibility(View.GONE);
+        mFriendLayout = view.findViewById(R.id.friends_layout);
+        mFriendLayout.setVisibility(View.GONE);
+
+        mSearch.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mFriendLayout.setVisibility(View.GONE);
+                mFriendName.setVisibility(View.GONE);
+            }
+        });
+
+        mFriendName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mListener.addFriend(mFriend);
+            }
+        });
 
         mSearch.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
+
+
                 InputMethodManager imm = (InputMethodManager)mSearch.getContext().getSystemService(Context.INPUT_METHOD_SERVICE);
                 imm.hideSoftInputFromWindow(mSearch.getWindowToken(), 0);
 
 
-                FirebaseDatabase database = FirebaseDatabase.getInstance();
-                final DatabaseReference myRef = database.getReference("users");
-
-                myRef.orderByChild("email").equalTo(query).addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        if (dataSnapshot.exists()) {
-
-                            boolean exit=true;
-                            int counter = 1;
-                            String key = dataSnapshot.getValue().toString();
-                            while (exit)
-                            {
-                                if(key.charAt(counter)=='=')
-                                    exit = false;
-                                else
-                                    counter++;
-                            }
-
-                            key = key.substring(1,counter);
-
-                            User friendUser = dataSnapshot.child(key).getValue(User.class);
-
-
-
-                    }
-                ]}
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    });
-
+                getFriendId(query);
 
                 return true;
             }
             @Override
             public boolean onQueryTextChange(String newText) {
                 return true;
+            }
+        });
+    }
+
+    public void getFriendId(String query)
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference("users");
+        final User[] user = {new User()};
+
+
+        myRef.orderByChild("email").equalTo(query).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    boolean exit=true;
+                    int counter = 1;
+                    String key = dataSnapshot.getValue().toString();
+                    while (exit)
+                    {
+                        if(key.charAt(counter)=='=')
+                            exit = false;
+                        else
+                            counter++;
+                    }
+
+                    key = key.substring(1,counter);
+
+                    user[0] = dataSnapshot.child(key).getValue(User.class);
+                    mFriend = new Friend();
+                    mFriend.setName(user[0].getName());
+                    mFriend.setFriendId(user[0].getId());
+                    mFriend.setEmail(user[0].getEmail());
+
+                    mFriendName.setVisibility(View.VISIBLE);
+                    mFriendLayout.setVisibility(View.VISIBLE);
+                    mFriendName.setText(mFriend.getName());
+                    mSearch.onActionViewCollapsed();
+
+                }
+                else
+                {
+                    mFriendName.setVisibility(View.VISIBLE);
+                    mFriendName.setText("No user found with that email");
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
             }
         });
     }
@@ -146,6 +191,6 @@ public class AddFriendFragment extends Fragment {
 
     public interface AddFriendInterface {
         // TODO: Update argument type and name
-        void addFriend(String id);
+        void addFriend(Friend friend);
     }
 }

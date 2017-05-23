@@ -13,14 +13,28 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.Toast;
 
-import com.example.ivonneortega.myfitnessapp.AddWorkout.CreateWorkoutFragment;
-import com.example.ivonneortega.myfitnessapp.AddWorkout.SeeAllWorkoutsFragment;
+import com.example.ivonneortega.myfitnessapp.Data.Friend;
+import com.example.ivonneortega.myfitnessapp.Data.User;
+import com.example.ivonneortega.myfitnessapp.DatabaseTableNames;
+import com.example.ivonneortega.myfitnessapp.FitnessDBHelper;
 import com.example.ivonneortega.myfitnessapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+
+import java.util.List;
 
 public class FriendsActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        SeeAllFriendsFragment.SeeAllFriendsInterface{
+        SeeAllFriendsFragment.SeeAllFriendsInterface, AddFriendFragment.AddFriendInterface{
+
+    private FirebaseAuth mAuth;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -106,11 +120,73 @@ public class FriendsActivity extends AppCompatActivity
 
     @Override
     public void clickedOnFriend(String id) {
-
+        WorkoutToChallenge fragment;
+        fragment = WorkoutToChallenge.newInstance();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
     public void addAFriend() {
-
+        AddFriendFragment fragment;
+        fragment = AddFriendFragment.newInstance();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
     }
-}
+
+    @Override
+    public void addFriend(Friend friend) {
+        FitnessDBHelper db = FitnessDBHelper.getInstance(this);
+        db.insertFriend(friend);
+        Toast.makeText(this, "Friend added", Toast.LENGTH_SHORT).show();
+        SeeAllFriendsFragment fragment;
+        fragment = SeeAllFriendsFragment.newInstance();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_container, fragment)
+                .addToBackStack(null)
+                .commit();
+
+        final List<Friend> listOfFriends = db.getAllFriends();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference(DatabaseTableNames.USER);
+        mAuth = FirebaseAuth.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+
+        myRef.orderByChild("id").equalTo(currentUser.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                boolean exit=true;
+                int counter = 1;
+                String key = dataSnapshot.getValue().toString();
+                while (exit)
+                {
+                    if(key.charAt(counter)=='=')
+                        exit = false;
+                    else
+                        counter++;
+                }
+
+                key = key.substring(1,counter);
+                System.out.println(key);
+
+
+                myRef.child(key).child("friends").setValue(listOfFriends);
+//                searchUsers.child(newKey).child("mRatings").child("friendlySUM").setValue(friendSUM);
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+//        routines.setUserId(currentUser.getUid());
+//        routines.setId(String.valueOf(routines.getId()));
+//        myRef.push().setValue(routines);
+
+    });
+}}

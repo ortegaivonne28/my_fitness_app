@@ -1,5 +1,7 @@
 package com.example.ivonneortega.myfitnessapp.Data;
 
+import com.example.ivonneortega.myfitnessapp.FitnessDBHelper;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -14,7 +16,7 @@ public class User {
     private String mEmail, mName, mLastname, mUsername;
     private float mWeight, mDesiredWeight;
     private int mHowMuchWater;
-    private List<Long> mFriends;
+    private List<Friend> mFriends;
     private List<Routines> mRoutines;
     private List<Challenges> mChallenges;
     private List<Workout> mWorkouts;
@@ -101,11 +103,11 @@ public class User {
         mHowMuchWater = howMuchWater;
     }
 
-    public List<Long> getFriends() {
+    public List<Friend> getFriends() {
         return mFriends;
     }
 
-    public void setFriends(List<Long> friends) {
+    public void setFriends(List<Friend> friends) {
         mFriends = friends;
     }
 

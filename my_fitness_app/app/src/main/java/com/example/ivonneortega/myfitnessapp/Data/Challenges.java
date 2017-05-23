@@ -6,39 +6,57 @@ package com.example.ivonneortega.myfitnessapp.Data;
 
 public class Challenges {
 
-    private long mId, mFriendId;
-    private Workout mWorkout;
+    private String mId, mFriendId, mUserId;
+    private Workout mWorkoutFriend, mWorkoutUser;
 
-    public Challenges(long id, long friendId, Workout workout) {
+    public Challenges(String id, String friendId, String userId, Workout workoutFriend, Workout workoutUser) {
         mId = id;
         mFriendId = friendId;
-        mWorkout = workout;
+        mUserId = userId;
+        mWorkoutFriend = workoutFriend;
+        mWorkoutUser = workoutUser;
     }
 
     public Challenges() {
     }
 
-    public long getId() {
+    public String getId() {
         return mId;
     }
 
-    public void setId(long id) {
+    public void setId(String id) {
         mId = id;
     }
 
-    public long getFriendId() {
+    public String getFriendId() {
         return mFriendId;
     }
 
-    public void setFriendId(long friendId) {
+    public void setFriendId(String friendId) {
         mFriendId = friendId;
     }
 
-    public Workout getWorkout() {
-        return mWorkout;
+    public String getUserId() {
+        return mUserId;
     }
 
-    public void setWorkout(Workout workout) {
-        mWorkout = workout;
+    public void setUserId(String userId) {
+        mUserId = userId;
+    }
+
+    public Workout getWorkoutFriend() {
+        return mWorkoutFriend;
+    }
+
+    public void setWorkoutFriend(Workout workoutFriend) {
+        mWorkoutFriend = workoutFriend;
+    }
+
+    public Workout getWorkoutUser() {
+        return mWorkoutUser;
+    }
+
+    public void setWorkoutUser(Workout workoutUser) {
+        mWorkoutUser = workoutUser;
     }
 }

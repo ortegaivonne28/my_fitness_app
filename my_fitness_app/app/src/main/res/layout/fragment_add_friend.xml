@@ -11,12 +11,14 @@
         android:layout_width="match_parent"
         android:background="@android:color/white"
         android:id="@+id/seatch"
+        android:queryHint="Enter user email"
         android:layout_height="wrap_content"></android.support.v7.widget.SearchView>
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="10dp"
+        android:id="@+id/friends_layout"
         android:layout_marginRight="10dp"
         android:layout_marginTop="16dp"
         android:background="@android:color/white"
