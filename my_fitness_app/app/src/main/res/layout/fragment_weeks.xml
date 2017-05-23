@@ -3,25 +3,48 @@
              xmlns:tools="http://schemas.android.com/tools"
              android:layout_width="match_parent"
              android:layout_height="match_parent"
+                android:focusable="true"
+                android:focusableInTouchMode="true"
              android:background="@drawable/add_routine_background"
              tools:context="com.example.ivonneortega.myfitnessapp.AddUserInformation.AddUserInformationFragment">
 
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:background="@android:color/white"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="10dp"
+        android:padding="10dp"
+        android:id="@+id/routine_name_layout"
+        android:layout_height="wrap_content">
+
+        <EditText
+            android:layout_width="match_parent"
+            android:text="Routine name"
+            android:id="@+id/routine_name"
+            android:nextFocusLeft="@id/routine_name"
+            android:nextFocusUp="@id/routine_name"
+            android:backgroundTint="@android:color/white"
+            android:layout_height="wrap_content"/>
+    </LinearLayout>
+
             <android.support.v7.widget.RecyclerView
                 android:layout_width="match_parent"
+                android:layout_below="@id/routine_name_layout"
                 android:id="@+id/week_recycler_view"
                 android:layout_height="wrap_content"/>
 
-        <!--<android.support.design.widget.FloatingActionButton-->
-            <!--android:id="@+id/fab"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_alignParentBottom="true"-->
-            <!--android:layout_alignParentRight="true"-->
-            <!--android:layout_marginBottom="26dp"-->
-            <!--android:layout_marginRight="16dp"-->
-            <!--android:src="@mipmap/ic_add_white_24dp"-->
-            <!--android:background="@color/colorAccentRoutine"-->
-            <!--app:backgroundTint="@color/colorAccentRoutine"/>-->
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="26dp"
+            android:layout_marginRight="16dp"
+            android:src="@mipmap/ic_add_white_24dp"
+            android:background="@color/colorAccentRoutine"
+            app:backgroundTint="@color/colorAccentRoutine"/>
 
 
 

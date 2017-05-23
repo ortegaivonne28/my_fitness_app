@@ -24,6 +24,11 @@
     <color name="colorAccentWorkout">#FF7618</color>
     <color name="colorGradientEndWorkout">#AC13B9</color>
 
+    <color name="colorPrimaryWorkoutAndCardio">#ED852C</color>
+    <color name="colorPrimaryDarkWorkoutAndCardio">#B86C1B</color>
+    <color name="colorGradientEndWorkoutAndCardio">#9E1098</color>
+    <color name="colorAccentWorkoutAndCardio">#FF1818</color>
+
 
 
 

@@ -298,6 +298,9 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
     {
         SQLiteDatabase db = getReadableDatabase();
 
+        today = today.replaceAll("\\s","");
+        today = today.replaceAll(":","1");
+
         Cursor cursor = db.query(DAY_USER_NAME, // a. table
                 null, // b. column names
                 COL_DAY_DATE + " = ? ", // c. selections
@@ -512,11 +515,19 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
     public long insertUserDay(String dayDate, String workoutId, String cardioId)
     {
         ContentValues values = new ContentValues();
+
+        dayDate = dayDate.replaceAll("\\s","");
+        dayDate = dayDate.replaceAll(":","1");
+
         values.put(COL_DAY_DATE, dayDate);
         values.put(COL_WORKOUT_ID, workoutId);
         values.put(COL_CARDIO_ID, cardioId);
         values.put(COL_WEIGHT, 0.0);
 
+        System.out.println("INSERT USER DAY IN DB");
+        System.out.println("WORKOUT ID: "+workoutId);
+
+        System.out.println(dayDate);
 
         SQLiteDatabase db = this.getWritableDatabase();
         long returnId = db.insert(DAY_USER_NAME, COL_DAY_DATE+" "+COL_WORKOUT_ID+" "+COL_CARDIO_ID+" "+COL_WEIGHT, values);
@@ -526,7 +537,12 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
 
     public Workout getWorkoutForToday(String today)
     {
+
         SQLiteDatabase db = getReadableDatabase();
+
+        today = today.replaceAll("\\s","");
+        today = today.replaceAll(":","1");
+
 
         Cursor cursor = db.query(DAY_USER_NAME, // a. table
                 null, // b. column names
@@ -541,6 +557,7 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
         if (cursor.moveToFirst()) {
             String workout_id = String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_WORKOUT_ID)));
             workout = getWorkoutById(workout_id);
+
             cursor.close();
             return workout;
 
@@ -549,9 +566,55 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
             return null;
     }
 
+    public boolean doesTodayExitInDatabase(String today)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+        today = today.replaceAll("\\s","");
+        today = today.replaceAll(":","1");
+
+        Cursor cursor = db.query(DAY_USER_NAME, // a. table
+                null, // b. column names
+                COL_DAY_DATE + " = ? ", // c. selections
+                new String[]{today}, // d. selections args
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+
+
+        if (cursor.moveToFirst()) {
+           return true;
+
+        }
+        cursor.close();
+        return false;
+    }
+
+    public void updateWorkoutForToday(String today, String workoutId)
+    {
+
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COL_WORKOUT_ID,workoutId);
+
+        String dayId = getDayIdByDate(today);
+
+        System.out.println("UPDATE WORKOUT FOR TODAY IN DB:");
+        System.out.println("WORKOUT ID: "+workoutId);
+
+        db.update(DAY_USER_NAME,values,COL_DAY_ID+" = "+dayId,null);
+        db.close();
+    }
+
     public String getDayIdByDate(String today)
     {
         SQLiteDatabase db = getReadableDatabase();
+
+        today = today.replaceAll("\\s","");
+        today = today.replaceAll(":","1");
 
         Cursor cursor = db.query(DAY_USER_NAME, // a. table
                 null, // b. column names
@@ -575,6 +638,9 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
     public int getWaterIntakeForToday(String today)
     {
         SQLiteDatabase db = getReadableDatabase();
+
+        today = today.replaceAll("\\s","");
+        today = today.replaceAll(":","1");
 
         Cursor cursor = db.query(DAY_USER_NAME, // a. table
                 null, // b. column names
@@ -617,7 +683,6 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
             {
                 routines = new Routines();
                 routines.setId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_ROUTINE_ID))));
-                System.out.println("This is the id "+routines.getId());
                 routines.setName(cursor.getString(cursor.getColumnIndex(COL_ROUTINE_NAME)));
                 cursor.moveToNext();
                 list.add(routines);
@@ -726,12 +791,43 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
             {
 
                 Week week = new Week();
-                week.setId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_ROUTINE_ID))));
+                week.setRoutineId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_ROUTINE_ID))));
+                week.setId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_WEEK_ID))));
                 HashMap<String,Day> mHashMap = new HashMap<>();
                 mHashMap = getDayById(week.getId());
                 week.setDayHashMap(mHashMap);
                 week.setRoutineId(id);
                 listWeek.add(week);
+                cursor.moveToNext();
+            }
+            return listWeek;
+        }
+
+
+        cursor.close();
+        return null;
+    }
+
+    public List<Workout> getUserWorkouts()
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+        Cursor cursor = db.query(WORKOUT_TABLE_NAME, // a. table
+                null, // b. column names
+                COL_DAY_ID +" = ?", // c. selections
+                new String[]{"-1"}, // d. selections args
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+
+
+        if (cursor.moveToFirst()) {
+
+            List<Workout> listWorkout = new ArrayList<>();
+            while(!cursor.isAfterLast())
+            {
+                Workout workout = new Workout();
                 cursor.moveToNext();
             }
             return listWeek;
@@ -786,11 +882,121 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
 
         values.put(COL_WORKOUT_COMPLETED,workoutCompletedId);
 
-        System.out.println();
 
         db.update(DAY_USER_NAME,values,COL_DAY_ID+"= "+id,null);
         db.close();
 
+    }
+
+
+    public void updateWorkout(Workout workout)
+    {
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COL_WORKOUT_NAME,workout.getNameOfWorkout());
+
+
+        db.update(WORKOUT_TABLE_NAME,values,COL_WORKOUT_ID+"= "+workout.getId(),null);
+
+        removeExercises(workout.getExercises());
+        for (Exercise exercise: workout.getExercises()) {
+            insertExercise(exercise,Long.parseLong(workout.getId()));
+        }
+        db.close();
+
+    }
+
+    public void removeAllUserDays()
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        long rowsDeleted = db.delete(DAY_USER_NAME, "1", null);
+        System.out.println("ROWS DELETED: "+rowsDeleted);
+        db.close();
+    }
+
+    public boolean isRoutineUsedAsRoutine(String id)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+
+        Cursor cursor = db.query(DAY_USER_NAME, // a. table
+                null, // b. column names
+                null, // c. selections
+                null, // d. selections args
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+
+        Workout workout = new Workout();
+        Day day = new Day();
+        Week week = new Week();
+        boolean isCurrentRoutine = false;
+        if (cursor.moveToFirst()) {
+
+            while(!cursor.isAfterLast())
+            {
+                week = getWeekById(id).get(0);
+                day = getDayById(week.getId()).get("Monday");
+                workout = getWorkoutByDayId(day.getId());
+
+                if(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_DAY_WORKOUT_ID))).equalsIgnoreCase(workout.getId()))
+                {
+                    cursor.moveToLast();
+                    isCurrentRoutine=true;
+                }
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return isCurrentRoutine;
+    }
+
+    public long removeWorkoutFromDay(String workoutID)
+    {
+        ContentValues values = new ContentValues();
+        values.put(COL_WORKOUT_ID,-1);
+        SQLiteDatabase db = this.getWritableDatabase();
+        long columnId =  db.update(DAY_USER_NAME,values, COL_WORKOUT_ID + "= "+workoutID , null);
+        db.close();
+        return columnId;
+    }
+
+    public void removeRoutineFromUserDay()
+    {
+        ContentValues values = new ContentValues();
+        values.put(COL_WORKOUT_ID,-1);
+        SQLiteDatabase db = this.getWritableDatabase();
+        long columnId =  db.update(DAY_USER_NAME,values, null, null);
+        System.out.println("DAYS UPDATED: "+columnId);
+        db.close();
+    }
+
+    public void removeSetRoutine(String routineId)
+    {
+        List<Week> weekList = getWeekById(routineId);
+        for (Week week : weekList) {
+            HashMap<String, Day> mHashmap = getDayById(week.getId());
+            for (String today: DatabaseTableNames.LIST_OF_DAYS) {
+                Workout workout = getWorkoutByDayId(mHashmap.get(today).getId());
+                removeWorkoutFromDay(workout.getId());
+            }
+        }
+    }
+
+    public void updateRoutineName(String id, String name)
+    {
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COL_ROUTINE_NAME,name);
+
+
+        db.update(ROUTINES_TABLE_NAME,values,COL_ROUTINE_ID+"= "+id,null);
+
+        db.close();
     }
 
     public void updateWaterIntakeForToday(String currentDay, int water)
@@ -802,12 +1008,12 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
 
         values.put(COL_GLASSES_OF_WATER,water);
 
-        System.out.println();
 
         db.update(DAY_USER_NAME,values,COL_DAY_ID+"= "+id,null);
         db.close();
 
     }
+
 
     public long insertExerciseCompleted(Exercise exercise, long id)
     {
@@ -887,6 +1093,154 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
         return null;
     }
 
+
+    public Workout getWorkoutByDayId(String id)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        Workout workout = new Workout();
+
+        Cursor cursor = db.query(WORKOUT_TABLE_NAME, // a. table
+                null, // b. column names
+                COL_DAY_ID + " = ?", // c. selections
+                new String[]{id}, // d. selections args
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+
+
+        if (cursor.moveToFirst()) {
+
+            while(!cursor.isAfterLast())
+            {
+                workout.setId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_WORKOUT_ID))));
+                workout.setNameOfWorkout(cursor.getString(cursor.getColumnIndex(COL_WORKOUT_NAME)));
+                workout.setExercises(getExercisesById(workout.getId()));
+                workout.setDayId(id);
+
+                cursor.moveToNext();
+            }
+            return workout;
+        }
+        cursor.close();
+        return null;
+    }
+    public List<Workout> getWorkoutsThatDontBelogToRoutine()
+    {
+        SQLiteDatabase db = getReadableDatabase();
+        Workout workout = new Workout();
+
+        Cursor cursor = db.query(WORKOUT_TABLE_NAME, // a. table
+                null, // b. column names
+                COL_DAY_ID + " = ?", // c. selections
+                new String[]{"-1"}, // d. selections args
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+
+        List<Workout> list = new ArrayList<>();
+        if (cursor.moveToFirst()) {
+
+            while(!cursor.isAfterLast())
+            {
+                workout = new Workout();
+                workout.setId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_WORKOUT_ID))));
+                workout.setNameOfWorkout(cursor.getString(cursor.getColumnIndex(COL_WORKOUT_NAME)));
+                workout.setExercises(getExercisesById(workout.getId()));
+                workout.setDayId("-1");
+
+                list.add(workout);
+                cursor.moveToNext();
+            }
+        }
+        cursor.close();
+        return list;
+    }
+
+    public long removeExercise(Exercise exercise)
+    {
+        ContentValues values = new ContentValues();
+        SQLiteDatabase db = this.getWritableDatabase();
+        long columnId =  db.delete(EXERCISE_NAME, COL_EXERCISE_ID + "= "+exercise.getId() , null);
+        db.close();
+        return columnId;
+    }
+
+    public long removeRoutine(String id)
+    {
+        removeWeekByRoutineId(id);
+        SQLiteDatabase db = this.getWritableDatabase();
+        long columnId =  db.delete(ROUTINES_TABLE_NAME, COL_ROUTINE_ID + "= "+id , null);
+//        db.close();
+        return columnId;
+    }
+
+    public long removeWeekById(String id)
+    {
+
+        List<Week> weekList = getWeekById(id);
+        for (Week week: weekList) {
+            removeDayByWeekId(week.getId());
+        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        long columnId =  db.delete(WEEK_NAME, COL_WEEK_ID + "= "+id , null);
+//        db.close();
+        return columnId;
+    }
+
+    public long removeWeekByRoutineId(String id)
+    {
+        List<Week> weekList = getWeekById(id);
+        for (Week week: weekList) {
+            removeDayByWeekId(week.getId());
+        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        long columnId =  db.delete(WEEK_NAME, COL_WEEK_ID + "= "+id , null);
+//        db.close();
+        return columnId;
+    }
+
+    public long removeDayByWeekId(String id)
+    {
+        HashMap<String, Day> day = getDayById(id);
+        if(day!=null)
+        {
+            for (String today: DatabaseTableNames.LIST_OF_DAYS) {
+                removeWorkoutByDayId(day.get(today).getId());
+            }
+        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        long columnId =  db.delete(DAY_WORKOUT_NAME, COL_DAY_WEEK_ID + "= "+id , null);
+//        db.close();
+        return columnId;
+    }
+
+    public long removeWorkoutByDayId(String id)
+    {
+        Workout workout = getWorkoutByDayId(id);
+        if(workout!=null)
+        {
+            List<Exercise> exercises = workout.getExercises();
+            removeExercises(exercises);
+        }
+        SQLiteDatabase db = this.getWritableDatabase();
+        long columnId =  db.delete(WORKOUT_TABLE_NAME, COL_DAY_ID + "= "+id , null);
+//        db.close();
+        return columnId;
+    }
+
+    public void removeExercises(List<Exercise> exercises)
+    {
+        if(exercises!=null)
+        {
+            for (Exercise exercise: exercises) {
+                long id = removeExercise(exercise);
+            }
+        }
+
+    }
+
     public void updateListOfExercises(List<Exercise> exercises)
     {
 
@@ -944,12 +1298,12 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
             {
 
                 Exercise exercise = new Exercise();
-                exercise.setId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_WORKOUT_ID))));
                 switch (cursor.getString(cursor.getColumnIndex(COL_TYPE_OF_EXERCISE_NAME)))
                 {
                     case ((String)DatabaseTableNames.SINGLE):
                         SingleExercise single = new SingleExercise(0,0);
                         single.setId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_EXERCISE_ID))));
+                        single.setWorkoutID(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_WORKOUT_ID))));
                         single.setName(cursor.getString(cursor.getColumnIndex(COL_EXERCISE_ONE)));
                         single.setReps(cursor.getInt(cursor.getColumnIndex(COL_REPS_ONE)));
                         single.setSets(cursor.getInt(cursor.getColumnIndex(COL_SETS)));
@@ -960,6 +1314,8 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
                         SuperSet superSet = new SuperSet();
                         superSet.setNameOne(cursor.getString(cursor.getColumnIndex(COL_EXERCISE_ONE)));
                         superSet.setNameTwo(cursor.getString(cursor.getColumnIndex(COL_EXERCISE_TWO)));
+                        superSet.setId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_EXERCISE_ID))));
+                        superSet.setWorkoutID(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_WORKOUT_ID))));
                         superSet.setRepsForFirst(cursor.getInt(cursor.getColumnIndex(COL_REPS_ONE)));
                         superSet.setRepsForSecond(cursor.getInt(cursor.getColumnIndex(COL_REPS_TWO)));
                         superSet.setSets(cursor.getInt(cursor.getColumnIndex(COL_SETS)));
@@ -973,6 +1329,8 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
                         triple.setNameThree(cursor.getString(cursor.getColumnIndex(COL_EXERCISE_THREE)));
                         triple.setRepsFirstExercise(cursor.getInt(cursor.getColumnIndex(COL_REPS_ONE)));
                         triple.setRepsSecondExercise(cursor.getInt(cursor.getColumnIndex(COL_REPS_TWO)));
+                        triple.setId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_EXERCISE_ID))));
+                        triple.setWorkoutID(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_WORKOUT_ID))));
                         triple.setRepsThirdExercise(cursor.getInt(cursor.getColumnIndex(COL_REPS_THREE)));
                         triple.setSets(cursor.getInt(cursor.getColumnIndex(COL_SETS)));
                         exercise = triple;
@@ -1002,7 +1360,6 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
         long week_id;
 
         for (Week week: weekList) {
-
             week_id = insertWeek(week,routineId);
             week.setId(String.valueOf(week_id));
         }
@@ -1032,13 +1389,13 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
         for (String day: listOfDays) {
             id_day = insertDay(hasmap.get(day),weekId,day);
             hasmap.get(day).setId(String.valueOf(id_day));
-            System.out.println(day);
         }
         return weekId;
     }
 
     public long insertDay(Day day, long id, String currentDay)
     {
+
         ContentValues values = new ContentValues();
         SQLiteDatabase db = this.getWritableDatabase();
         values.put(COL_DAY_WORKOUT_DAY_NAME, currentDay);
@@ -1066,6 +1423,27 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
 
         return workoutId;
     }
+
+    public long deteleAllWorkouts()
+    {
+
+        ContentValues values = new ContentValues();
+        SQLiteDatabase db = this.getWritableDatabase();
+        long columnId =  db.delete(WORKOUT_TABLE_NAME, COL_DAY_ID + "= -1" , null);
+        db.close();
+        return columnId;
+    }
+
+    public long deleteOneWorkout(String id)
+    {
+
+        ContentValues values = new ContentValues();
+        SQLiteDatabase db = this.getWritableDatabase();
+        long columnId =  db.delete(WORKOUT_TABLE_NAME, COL_WORKOUT_ID + " = " + id , null);
+        db.close();
+        return columnId;
+    }
+
 
 
 
@@ -1100,7 +1478,6 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
         }
         values.put(COL_TYPE_OF_EXERCISE_NAME,type);
         long exerciseId = db.insert(EXERCISE_NAME,null,values);
-
         return exerciseId;
     }
 

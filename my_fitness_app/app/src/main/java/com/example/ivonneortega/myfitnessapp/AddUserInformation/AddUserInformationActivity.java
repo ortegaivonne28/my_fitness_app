@@ -109,6 +109,7 @@ public class AddUserInformationActivity extends AppCompatActivity
 
 
         startActivity(new Intent(AddUserInformationActivity.this, MainActivity.class));
+        finish();
 //        SeeRoutinesFragment userInfoFragment = SeeRoutinesFragment.newInstance();
 //        getSupportFragmentManager().beginTransaction()
 //                .replace(R.id.fragment_container,userInfoFragment)

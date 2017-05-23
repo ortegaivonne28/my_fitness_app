@@ -1,5 +1,6 @@
 package com.example.ivonneortega.myfitnessapp.Routines;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Rect;
@@ -42,7 +43,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class ExercisesPerDaysActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener, UpdateHashMapInterface {
 
     ExercisesPerDaysActivity.ExercisesPageAdapter mDemoCollectionPagerAdapter;
     ViewPager mViewPager;
@@ -56,19 +57,35 @@ public class ExercisesPerDaysActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        final FitnessDBHelper db = FitnessDBHelper.getInstance(this);
+
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                if(mDayHashMap.size()>0)
+                {
+                    for (String day: DatabaseTableNames.LIST_OF_DAYS) {
+                        System.out.println(day);
+                        Day dayy;
+                            dayy = mDayHashMap.get(day);
+
+
+                        Workout workout = null;
+                        if(dayy !=null) {
+                            workout = dayy.getWorkout();
+                            db.updateWorkout(workout);
+                        }
+                    }
+                }
+
             }
         });
 
         Intent intent = getIntent();
         mId = intent.getStringExtra("id");
 
-        FitnessDBHelper db = FitnessDBHelper.getInstance(this);
+
         mDayHashMap = db.getDayById(mId);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -163,12 +180,20 @@ public class ExercisesPerDaysActivity extends AppCompatActivity
         return true;
     }
 
+    @Override
+    public void updateHashMap(String today, Workout workout) {
+        Day day = mDayHashMap.get(today);
+        day.setWorkout(workout);
+        mDayHashMap.put(today,day);
+    }
 
 
     public static class ExercisesPageAdapter extends FragmentStatePagerAdapter {
 
         HashMap<String, Day> mDayHashMap;
         public static final String DAY_ID = "day_id";
+        public static final String TODAY = "today";
+        public String mToday;
 
         public ExercisesPageAdapter(FragmentManager fm, HashMap<String, Day> hashMap) {
             super(fm);
@@ -179,14 +204,15 @@ public class ExercisesPerDaysActivity extends AppCompatActivity
         public Fragment getItem(int i) {
             Fragment fragment = new ExercisesPerDaysActivity.DemoObjectFragment();
             Bundle args = new Bundle();
-            args.putString(DAY_ID,mDayHashMap.get(DatabaseTableNames.LIST_OF_DAYS[i]).getId()); // Our object is just an integer :-P
+            mToday = DatabaseTableNames.LIST_OF_DAYS[i];
+            args.putString(DAY_ID,mDayHashMap.get(mToday).getId());
+            args.putString(TODAY,mToday);
             fragment.setArguments(args);
             return fragment;
         }
 
         @Override
         public int getCount() {
-            // For this contrived example, we have a 100-object collection.
             return mDayHashMap.size();
         }
 
@@ -207,6 +233,9 @@ public class ExercisesPerDaysActivity extends AppCompatActivity
         RecyclerView mRecyclerview;
         String mId;
         ExerciseRecyclerViewAdapter mAdapter;
+        UpdateHashMapInterface mListener;
+        Workout mWorkout;
+        String mToday;
 
         public static final String ARG_OBJECT = "object";
 
@@ -216,7 +245,7 @@ public class ExercisesPerDaysActivity extends AppCompatActivity
             View rootView = inflater.inflate(R.layout.fragment_routines, container, false);
             Bundle args = getArguments();
             mId = args.getString(ExercisesPageAdapter.DAY_ID);
-
+            mToday = args.getString(ExercisesPageAdapter.TODAY);
 
             return rootView;
         }
@@ -229,9 +258,9 @@ public class ExercisesPerDaysActivity extends AppCompatActivity
             mRecyclerview.setLayoutManager(new LinearLayoutManager(mRecyclerview.getContext(),LinearLayoutManager.VERTICAL,false));
 
 
-            Workout workout = new Workout();
-            workout = FitnessDBHelper.getInstance(mRecyclerview.getContext()).getWorkoutById(mId);
-            mExercises = FitnessDBHelper.getInstance(mRecyclerview.getContext()).getExercisesById(workout.getId());
+            mWorkout = new Workout();
+            mWorkout = FitnessDBHelper.getInstance(mRecyclerview.getContext()).getWorkoutByDayId(mId);
+            mExercises = FitnessDBHelper.getInstance(mRecyclerview.getContext()).getExercisesById(mWorkout.getId());
             mAdapter = new ExerciseRecyclerViewAdapter(mExercises,ExerciseRecyclerViewAdapter.TYPE_USER_EDITING, this);
             mRecyclerview.setAdapter(mAdapter);
 
@@ -239,10 +268,16 @@ public class ExercisesPerDaysActivity extends AppCompatActivity
         }
         @Override
         public void updateListOfExercises(List<Exercise> exercises) {
-            FitnessDBHelper.getInstance(mRecyclerview.getContext()).updateListOfExercises(exercises);
+//            FitnessDBHelper.getInstance(mRecyclerview.getContext()).updateListOfExercises(exercises);
+            mWorkout.setExercises(exercises);
+            mListener.updateHashMap(mToday,mWorkout);
         }
 
-
+        @Override
+        public void onAttach(Context context) {
+            super.onAttach(context);
+            mListener = (UpdateHashMapInterface)context;
+        }
 
     }
 

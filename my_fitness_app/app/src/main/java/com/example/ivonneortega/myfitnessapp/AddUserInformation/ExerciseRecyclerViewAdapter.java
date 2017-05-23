@@ -13,13 +13,12 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ivonneortega.myfitnessapp.AddWorkout.CreateWorkoutFragment;
 import com.example.ivonneortega.myfitnessapp.Data.Exercise;
 import com.example.ivonneortega.myfitnessapp.Data.SingleExercise;
 import com.example.ivonneortega.myfitnessapp.Data.SuperSet;
 import com.example.ivonneortega.myfitnessapp.Data.TripleSet;
-import com.example.ivonneortega.myfitnessapp.Data.Week;
 import com.example.ivonneortega.myfitnessapp.R;
-import com.example.ivonneortega.myfitnessapp.Routines.ExercisesPerDaysActivity;
 
 import java.util.List;
 
@@ -30,7 +29,7 @@ import static com.facebook.GraphRequest.TAG;
  */
 
 public class ExerciseRecyclerViewAdapter extends RecyclerView.Adapter
-implements AddWeekWorkoutFragment.getList{
+implements AddWeekWorkoutFragment.getList, CreateWorkoutFragment.GetListFromRecyclerView {
 
     private List<Exercise> mList;
     public static final int VIEW_TYPE_SINGLE = 1;
@@ -43,6 +42,7 @@ implements AddWeekWorkoutFragment.getList{
 
     public static final int TYPE_USER_CREATING = 1;
     public static final int TYPE_USER_EDITING = 2;
+    public static final int TYPE_USER_EDITING_WORKOUT = 3;
 
     public ExerciseRecyclerViewAdapter(List<Exercise> list, int type) {
         mList = list;
@@ -203,7 +203,6 @@ implements AddWeekWorkoutFragment.getList{
             }
             if(exercise instanceof SuperSet)
             {
-                Log.d(TAG, "isExerciseNotEmpty: "+((SuperSet) exercise).getNameOne()+" "+((SuperSet) exercise).getNameTwo()+" "+((SuperSet) exercise).getRepsForFirst()+" "+((SuperSet) exercise).getRepsForSecond()+" "+((SuperSet) exercise).getSets());
                 if(((SuperSet) exercise).getNameOne()!=null && ((SuperSet) exercise).getNameTwo()!=null &&
                         ((SuperSet) exercise).getSets()!=0 && ((SuperSet) exercise).getRepsForFirst()!=0 && ((SuperSet) exercise).getRepsForSecond()!=0)
                     return true;
@@ -222,7 +221,7 @@ implements AddWeekWorkoutFragment.getList{
 
     @Override
     public int getItemCount() {
-        if(mType == TYPE_USER_CREATING)
+        if(mType == TYPE_USER_CREATING || mType==TYPE_USER_EDITING_WORKOUT)
         return mList.size()+1;
         else
             return mList.size();
@@ -230,6 +229,11 @@ implements AddWeekWorkoutFragment.getList{
 
     @Override
     public List<Exercise> getList() {
+        return mList;
+    }
+
+    @Override
+    public List<Exercise> getListOfExercises() {
         return mList;
     }
 
@@ -478,8 +482,19 @@ implements AddWeekWorkoutFragment.getList{
                             break;
                     }
             }
-            if(mType == TYPE_USER_EDITING)
-                mListener.updateListOfExercises(mList);
+            if(mType == TYPE_USER_EDITING) {
+                boolean empty = false;
+                for (Exercise exercise: mList) {
+                    if(!isExerciseNotEmpty(exercise)) {
+                        empty = true;
+                        Toast.makeText(mEditText.getContext(), "Please complete all your exercises", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                if(!empty) {
+                    mListener.updateListOfExercises(mList);
+                    System.out.println("THE SIZE OF THE LIST IN RECYCLER VIEW "+mList.size());
+                }
+            }
         }
 
         public void afterTextChanged(Editable s) {

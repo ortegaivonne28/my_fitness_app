@@ -6,12 +6,16 @@ package com.example.ivonneortega.myfitnessapp.Data;
 
 public class Challenges {
 
-    private long mId, mFriendId, mExerciseId;
+    private long mId, mFriendId;
+    private Workout mWorkout;
 
-    public Challenges(long id, long friendId, long exerciseId) {
+    public Challenges(long id, long friendId, Workout workout) {
         mId = id;
         mFriendId = friendId;
-        mExerciseId = exerciseId;
+        mWorkout = workout;
+    }
+
+    public Challenges() {
     }
 
     public long getId() {
@@ -30,11 +34,11 @@ public class Challenges {
         mFriendId = friendId;
     }
 
-    public long getExerciseId() {
-        return mExerciseId;
+    public Workout getWorkout() {
+        return mWorkout;
     }
 
-    public void setExerciseId(long exerciseId) {
-        mExerciseId = exerciseId;
+    public void setWorkout(Workout workout) {
+        mWorkout = workout;
     }
 }

@@ -26,6 +26,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ivonneortega.myfitnessapp.AddWorkout.AddWorkoutActivity;
 import com.example.ivonneortega.myfitnessapp.Data.Workout;
 import com.example.ivonneortega.myfitnessapp.Routines.RoutinesActivity;
 import com.example.ivonneortega.myfitnessapp.Workout.StartWorkoutActivity;
@@ -69,19 +70,11 @@ public class MainActivity extends FragmentActivity
         toggle.syncState();
 
 
-        try {
-            mListOfDays = getListOfDays();
-        } catch (ParseException e) {
-            e.printStackTrace();
-        }
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
-        mDemoCollectionPagerAdapter = new DemoCollectionPagerAdapter(getSupportFragmentManager(),mListOfDays);
 
-        mViewPager = (ViewPager) findViewById(R.id.pager);
-        mViewPager.setAdapter(mDemoCollectionPagerAdapter);
-        mViewPager.setCurrentItem(6);
 
 
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -98,7 +91,21 @@ public class MainActivity extends FragmentActivity
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            mListOfDays = getListOfDays();
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
 
+        mDemoCollectionPagerAdapter = new DemoCollectionPagerAdapter(getSupportFragmentManager(),mListOfDays);
+
+        mViewPager = (ViewPager) findViewById(R.id.pager);
+        mViewPager.setAdapter(mDemoCollectionPagerAdapter);
+        mViewPager.setCurrentItem(6);
+    }
 
     public String[] getListOfDays() throws ParseException {
 
@@ -167,7 +174,7 @@ public class MainActivity extends FragmentActivity
         if (id == R.id.nav_routines) {
             startActivity(new Intent(MainActivity.this,RoutinesActivity.class));
         } else if (id == R.id.nav_workouts) {
-
+            startActivity(new Intent(MainActivity.this, AddWorkoutActivity.class));
         } else if (id == R.id.nav_cardio) {
 
         } else if (id == R.id.nav_friends) {
@@ -261,11 +268,12 @@ public class MainActivity extends FragmentActivity
     public static class DemoObjectFragment extends Fragment
     implements View.OnClickListener {
 
-        ImageView mGlass1, mGlass2, mGlass3, mGlass4, mGlass5, mGlass6, mGlass7, mGlass8, mDividerWater;
-        TextView mWaterCompleted, mWorkout, mCardio, mChallenges, mExtraWorkoutInfo;
+        ImageView mGlass1, mGlass2, mGlass3, mGlass4, mGlass5, mGlass6, mGlass7, mGlass8, mDividerWater, mDividerWorkout;
+        TextView mWaterCompleted, mWorkout, mCardio, mChallenges, mExtraWorkoutInfo, mSetNewWorkout;
         String mDay, mToday;
         FitnessDBHelper db;
         boolean workoutForToday, workoutCompleted;
+        View mView;
 
         public static final String ARG_OBJECT = "object";
 
@@ -300,36 +308,18 @@ public class MainActivity extends FragmentActivity
             mCardio = (TextView) view.findViewById(R.id.cardio_title);
             mChallenges = (TextView) view.findViewById(R.id.challenge_title);
             mExtraWorkoutInfo = (TextView) view.findViewById(R.id.workout_set_new_workout);
+            mView = view.findViewById(R.id.workout_layout);
+            mView.setOnClickListener(this);
+            mSetNewWorkout = (TextView) view.findViewById(R.id.workout_set_new_workout);
+            mDividerWorkout = (ImageView) view.findViewById(R.id.dividerExtraWorkout);
 
 
             db = FitnessDBHelper.getInstance(mWorkout.getContext());
             getWaterIntakeForToday();
 
+
             mGlass1.setOnClickListener(this);
-            view.findViewById(R.id.workout_layout).setOnClickListener(this);
 
-
-
-            Workout todayWorkout = db.getWorkoutForToday(mDay);
-
-            workoutCompleted = false;
-            if (todayWorkout != null) {
-                mWorkout.setText(todayWorkout.getNameOfWorkout());
-                if (db.isWorkoutCompletedForToday(mDay)) {
-                    view.findViewById(R.id.workout_set_new_workout).setVisibility(View.VISIBLE);
-                    mExtraWorkoutInfo.setText("Workout completed!");
-                    workoutForToday = false;
-                    workoutCompleted = true;
-                } else {
-                    workoutForToday = true;
-                }
-
-            } else {
-                mWorkout.setText("You don't have a workout for today!");
-                view.findViewById(R.id.dividerExtraWorkout).setVisibility(View.VISIBLE);
-                view.findViewById(R.id.workout_set_new_workout).setVisibility(View.VISIBLE);
-                workoutForToday = false;
-            }
 
 
         }
@@ -338,60 +328,118 @@ public class MainActivity extends FragmentActivity
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.glass1:
-                    mGlass1.setClickable(false);
-                    mGlass1.setImageResource(R.drawable.glass_full);
-                    mGlass2.setImageResource(R.drawable.glass_add);
-                    mGlass2.setOnClickListener(this);
-                    db.updateWaterIntakeForToday(mToday,1);
+                    if(mToday.equalsIgnoreCase(mDay))
+                    {
+                        mGlass1.setClickable(false);
+                        mGlass1.setImageResource(R.drawable.glass_full);
+                        mGlass2.setImageResource(R.drawable.glass_add);
+                        mGlass2.setOnClickListener(this);
+                        db.updateWaterIntakeForToday(mDay,1);
+                    }
+                    else
+                    {
+                        Toast.makeText(mGlass1.getContext(), "Can't update water intake", Toast.LENGTH_SHORT).show();
+                    }
+
                     break;
                 case R.id.glass2:
-                    mGlass2.setClickable(false);
-                    mGlass2.setImageResource(R.drawable.glass_full);
-                    mGlass3.setImageResource(R.drawable.glass_add);
-                    mGlass3.setOnClickListener(this);
-                    db.updateWaterIntakeForToday(mToday,2);
+                    if(mToday.equalsIgnoreCase(mDay))
+                    {
+                        mGlass2.setClickable(false);
+                        mGlass2.setImageResource(R.drawable.glass_full);
+                        mGlass3.setImageResource(R.drawable.glass_add);
+                        mGlass3.setOnClickListener(this);
+                        db.updateWaterIntakeForToday(mDay,2);
+                    }
+                    else
+                    {
+                        Toast.makeText(mGlass1.getContext(), "Can't update water intake", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case R.id.glass3:
-                    mGlass3.setClickable(false);
-                    mGlass3.setImageResource(R.drawable.glass_full);
-                    mGlass4.setImageResource(R.drawable.glass_add);
-                    mGlass4.setOnClickListener(this);
-                    db.updateWaterIntakeForToday(mToday,3);
+                    if(mToday.equalsIgnoreCase(mDay))
+                    {
+                        mGlass3.setClickable(false);
+                        mGlass3.setImageResource(R.drawable.glass_full);
+                        mGlass4.setImageResource(R.drawable.glass_add);
+                        mGlass4.setOnClickListener(this);
+                        db.updateWaterIntakeForToday(mDay,3);
+                    }
+                    else
+                    {
+                        Toast.makeText(mGlass1.getContext(), "Can't update water intake", Toast.LENGTH_SHORT).show();
+                    }
+
                     break;
                 case R.id.glass4:
-                    mGlass4.setClickable(false);
-                    mGlass4.setImageResource(R.drawable.glass_full);
-                    mGlass5.setImageResource(R.drawable.glass_add);
-                    mGlass5.setOnClickListener(this);
-                    db.updateWaterIntakeForToday(mToday,4);
+                    if(mToday.equalsIgnoreCase(mDay))
+                    {
+                        mGlass4.setClickable(false);
+                        mGlass4.setImageResource(R.drawable.glass_full);
+                        mGlass5.setImageResource(R.drawable.glass_add);
+                        mGlass5.setOnClickListener(this);
+                        db.updateWaterIntakeForToday(mDay,4);
+                    }
+                    else
+                    {
+                        Toast.makeText(mGlass1.getContext(), "Can't update water intake", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case R.id.glass5:
-                    mGlass5.setClickable(false);
-                    mGlass5.setImageResource(R.drawable.glass_full);
-                    mGlass6.setImageResource(R.drawable.glass_add);
-                    mGlass6.setOnClickListener(this);
-                    db.updateWaterIntakeForToday(mToday,5);
+                    if(mToday.equalsIgnoreCase(mDay))
+                    {
+                        mGlass5.setClickable(false);
+                        mGlass5.setImageResource(R.drawable.glass_full);
+                        mGlass6.setImageResource(R.drawable.glass_add);
+                        mGlass6.setOnClickListener(this);
+                        db.updateWaterIntakeForToday(mDay,5);
+                    }
+                    else
+                    {
+                        Toast.makeText(mGlass1.getContext(), "Can't update water intake", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case R.id.glass6:
-                    mGlass6.setClickable(false);
-                    mGlass6.setImageResource(R.drawable.glass_full);
-                    mGlass7.setImageResource(R.drawable.glass_add);
-                    mGlass7.setOnClickListener(this);
-                    db.updateWaterIntakeForToday(mToday,6);
+                    if(mToday.equalsIgnoreCase(mDay))
+                    {
+                        mGlass6.setClickable(false);
+                        mGlass6.setImageResource(R.drawable.glass_full);
+                        mGlass7.setImageResource(R.drawable.glass_add);
+                        mGlass7.setOnClickListener(this);
+                        db.updateWaterIntakeForToday(mDay,6);
+                    }
+                    else
+                    {
+                        Toast.makeText(mGlass1.getContext(), "Can't update water intake", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case R.id.glass7:
-                    mGlass7.setClickable(false);
-                    mGlass7.setImageResource(R.drawable.glass_full);
-                    mGlass8.setImageResource(R.drawable.glass_add);
-                    mGlass8.setOnClickListener(this);
-                    db.updateWaterIntakeForToday(mToday,7);
+                    if(mToday.equalsIgnoreCase(mDay))
+                    {
+                        mGlass7.setClickable(false);
+                        mGlass7.setImageResource(R.drawable.glass_full);
+                        mGlass8.setImageResource(R.drawable.glass_add);
+                        mGlass8.setOnClickListener(this);
+                        db.updateWaterIntakeForToday(mDay,7);
+                    }
+                    else
+                    {
+                        Toast.makeText(mGlass1.getContext(), "Can't update water intake", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case R.id.glass8:
-                    mGlass8.setClickable(false);
-                    mGlass8.setImageResource(R.drawable.glass_full);
-                    mWaterCompleted.setVisibility(View.VISIBLE);
-                    mDividerWater.setVisibility(View.VISIBLE);
-                    db.updateWaterIntakeForToday(mToday,8);
+                    if(mToday.equalsIgnoreCase(mDay))
+                    {
+                        mGlass8.setClickable(false);
+                        mGlass8.setImageResource(R.drawable.glass_full);
+                        mWaterCompleted.setVisibility(View.VISIBLE);
+                        mDividerWater.setVisibility(View.VISIBLE);
+                        db.updateWaterIntakeForToday(mDay,8);
+                    }
+                    else
+                    {
+                        Toast.makeText(mGlass1.getContext(), "Can't update water intake", Toast.LENGTH_SHORT).show();
+                    }
                     break;
                 case R.id.workout_layout:
                     if (mToday.equalsIgnoreCase(mDay)) {
@@ -409,7 +457,7 @@ public class MainActivity extends FragmentActivity
 
         public void getWaterIntakeForToday()
         {
-            int water = db.getWaterIntakeForToday(mToday);
+            int water = db.getWaterIntakeForToday(mDay);
             switch (water)
             {
                 case 1:
@@ -421,46 +469,130 @@ public class MainActivity extends FragmentActivity
                 case 2:
                     mGlass2.setClickable(false);
                     mGlass2.setImageResource(R.drawable.glass_full);
+                    mGlass1.setClickable(false);
+                    mGlass1.setImageResource(R.drawable.glass_full);
                     mGlass3.setImageResource(R.drawable.glass_add);
                     mGlass3.setOnClickListener(this);
                     break;
                 case 3:
                     mGlass3.setClickable(false);
                     mGlass3.setImageResource(R.drawable.glass_full);
+                    mGlass2.setClickable(false);
+                    mGlass2.setImageResource(R.drawable.glass_full);
+                    mGlass1.setClickable(false);
+                    mGlass1.setImageResource(R.drawable.glass_full);
                     mGlass4.setImageResource(R.drawable.glass_add);
                     mGlass4.setOnClickListener(this);
                     break;
                 case 4:
                     mGlass4.setClickable(false);
                     mGlass4.setImageResource(R.drawable.glass_full);
+                    mGlass3.setClickable(false);
+                    mGlass3.setImageResource(R.drawable.glass_full);
+                    mGlass2.setClickable(false);
+                    mGlass2.setImageResource(R.drawable.glass_full);
+                    mGlass1.setClickable(false);
+                    mGlass1.setImageResource(R.drawable.glass_full);
                     mGlass5.setImageResource(R.drawable.glass_add);
                     mGlass5.setOnClickListener(this);
                     break;
                 case 5:
                     mGlass5.setClickable(false);
                     mGlass5.setImageResource(R.drawable.glass_full);
+                    mGlass4.setClickable(false);
+                    mGlass4.setImageResource(R.drawable.glass_full);
+                    mGlass3.setClickable(false);
+                    mGlass3.setImageResource(R.drawable.glass_full);
+                    mGlass2.setClickable(false);
+                    mGlass2.setImageResource(R.drawable.glass_full);
+                    mGlass1.setClickable(false);
+                    mGlass1.setImageResource(R.drawable.glass_full);
                     mGlass6.setImageResource(R.drawable.glass_add);
                     mGlass6.setOnClickListener(this);
                     break;
                 case 6:
                     mGlass6.setClickable(false);
                     mGlass6.setImageResource(R.drawable.glass_full);
+                    mGlass5.setClickable(false);
+                    mGlass5.setImageResource(R.drawable.glass_full);
+                    mGlass4.setClickable(false);
+                    mGlass4.setImageResource(R.drawable.glass_full);
+                    mGlass3.setClickable(false);
+                    mGlass3.setImageResource(R.drawable.glass_full);
+                    mGlass2.setClickable(false);
+                    mGlass2.setImageResource(R.drawable.glass_full);
+                    mGlass1.setClickable(false);
+                    mGlass1.setImageResource(R.drawable.glass_full);
                     mGlass7.setImageResource(R.drawable.glass_add);
                     mGlass7.setOnClickListener(this);
                     break;
                 case 7:
                     mGlass7.setClickable(false);
                     mGlass7.setImageResource(R.drawable.glass_full);
+                    mGlass6.setClickable(false);
+                    mGlass6.setImageResource(R.drawable.glass_full);
+                    mGlass5.setClickable(false);
+                    mGlass5.setImageResource(R.drawable.glass_full);
+                    mGlass4.setClickable(false);
+                    mGlass4.setImageResource(R.drawable.glass_full);
+                    mGlass3.setClickable(false);
+                    mGlass3.setImageResource(R.drawable.glass_full);
+                    mGlass2.setClickable(false);
+                    mGlass2.setImageResource(R.drawable.glass_full);
+                    mGlass1.setClickable(false);
+                    mGlass1.setImageResource(R.drawable.glass_full);
                     mGlass8.setImageResource(R.drawable.glass_add);
                     mGlass8.setOnClickListener(this);
                     break;
                 case 8:
                     mGlass8.setClickable(false);
                     mGlass8.setImageResource(R.drawable.glass_full);
+                    mGlass7.setClickable(false);
+                    mGlass7.setImageResource(R.drawable.glass_full);
+                    mGlass6.setClickable(false);
+                    mGlass6.setImageResource(R.drawable.glass_full);
+                    mGlass5.setClickable(false);
+                    mGlass5.setImageResource(R.drawable.glass_full);
+                    mGlass4.setClickable(false);
+                    mGlass4.setImageResource(R.drawable.glass_full);
+                    mGlass3.setClickable(false);
+                    mGlass3.setImageResource(R.drawable.glass_full);
+                    mGlass2.setClickable(false);
+                    mGlass2.setImageResource(R.drawable.glass_full);
+                    mGlass1.setClickable(false);
+                    mGlass1.setImageResource(R.drawable.glass_full);
                     mWaterCompleted.setVisibility(View.VISIBLE);
                     mDividerWater.setVisibility(View.VISIBLE);
                     break;
 
+            }
+        }
+
+        @Override
+        public void onResume() {
+            super.onResume();
+
+
+
+            Workout todayWorkout = db.getWorkoutForToday(mDay);
+//            db.removeAllUserDays();
+            workoutCompleted = false;
+            if (todayWorkout != null) {
+                mWorkout.setText(todayWorkout.getNameOfWorkout());
+                if (db.isWorkoutCompletedForToday(mDay)) {
+                    mSetNewWorkout.setVisibility(View.VISIBLE);
+                    mExtraWorkoutInfo.setText("Workout completed!");
+                    workoutForToday = false;
+                    workoutCompleted = true;
+                } else {
+                    workoutForToday = true;
+                }
+
+            } else {
+                mWorkout.setText("You don't have a workout for today!");
+                mDividerWorkout.setVisibility(View.VISIBLE);
+                mSetNewWorkout.setVisibility(View.VISIBLE);
+                workoutForToday = false;
             }
         }
 

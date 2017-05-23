@@ -45,6 +45,11 @@
             android:label="@string/title_activity_start_workout"
             android:theme="@style/WorkoutActivityTheme">
         </activity>
+        <activity
+            android:name=".AddWorkout.AddWorkoutActivity"
+            android:label="@string/title_activity_add_workout"
+            android:theme="@style/WorkoutAndCardioTheme">
+        </activity>
     </application>
 
 </manifest>

@@ -39,8 +39,11 @@
         <item name="colorAccent">@color/colorAccentWorkout</item>
     </style>
 
-
-
+    <style name="WorkoutAndCardioTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimaryWorkoutAndCardio</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkWorkoutAndCardio</item>
+        <item name="colorAccent">@color/colorAccentWorkoutAndCardio</item>
+    </style>
 
 
 </resources>
