@@ -822,15 +822,21 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
                 null); // h. limit
 
 
+        List<Workout> listWorkout = new ArrayList<>();
         if (cursor.moveToFirst()) {
-
-            List<Workout> listWorkout = new ArrayList<>();
             while(!cursor.isAfterLast())
             {
                 Workout workout = new Workout();
+                workout.setId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_WORKOUT_ID))));
+                workout.setDayId("-1");
+                workout.setNameOfWorkout(cursor.getString(cursor.getColumnIndex(COL_WORKOUT_NAME)));
+                workout.setExercises(getExercisesById(workout.getId()));
+
+                listWorkout.add(workout);
+
                 cursor.moveToNext();
             }
-            return listWeek;
+            return listWorkout;
         }
 
 

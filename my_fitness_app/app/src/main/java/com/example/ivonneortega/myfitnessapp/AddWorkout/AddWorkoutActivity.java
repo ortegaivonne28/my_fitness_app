@@ -14,18 +14,26 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.example.ivonneortega.myfitnessapp.AddUserInformation.AddUserInformationActivity;
 import com.example.ivonneortega.myfitnessapp.Data.Exercise;
+import com.example.ivonneortega.myfitnessapp.Data.User;
 import com.example.ivonneortega.myfitnessapp.Data.Workout;
 import com.example.ivonneortega.myfitnessapp.DatabaseTableNames;
 import com.example.ivonneortega.myfitnessapp.FitnessDBHelper;
+import com.example.ivonneortega.myfitnessapp.LoginActivity;
+import com.example.ivonneortega.myfitnessapp.MainActivity;
 import com.example.ivonneortega.myfitnessapp.R;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
+import static com.example.ivonneortega.myfitnessapp.R.id.body_text;
 import static com.example.ivonneortega.myfitnessapp.R.id.fab;
 
 public class AddWorkoutActivity extends AppCompatActivity
@@ -54,11 +62,9 @@ public class AddWorkoutActivity extends AppCompatActivity
         whichFab = FAB_CREATE_WORKOUT;
         db = FitnessDBHelper.getInstance(this);
 
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        final DatabaseReference myRef = database.getReference(DatabaseTableNames.ROUTINES);
-        FirebaseUser currentUser = mAuth.getCurrentUser();
+        mAuth = FirebaseAuth.getInstance();
 
-//        myRef.push().setValue(routines);
+
 
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
@@ -84,14 +90,7 @@ public class AddWorkoutActivity extends AppCompatActivity
                     case FAB_SAVE_WORKOUT:
                         if(whichFab == FAB_SAVE_WORKOUT)
                         {
-                            mWorkout = mListener.getWorkoutFromFragment();
-                            if(mWorkout==null)
-                                Toast.makeText(AddWorkoutActivity.this, "Please complete the exercise", Toast.LENGTH_SHORT).show();
-                            else{
-                                db.insertWorkout(mWorkout,-1);
-                                Toast.makeText(AddWorkoutActivity.this, "Workout added successfully", Toast.LENGTH_SHORT).show();
-                                startActivity(new Intent(view.getContext().getApplicationContext(),AddWorkoutActivity.class));
-                            }
+                           saveWorkout();
                         }
                         else
                             Toast.makeText(AddWorkoutActivity.this, "Please create a workout first", Toast.LENGTH_SHORT).show();
@@ -130,6 +129,49 @@ public class AddWorkoutActivity extends AppCompatActivity
                 .replace(R.id.fragment_container, routineFragment)
                 .commit();
 
+    }
+
+    public void saveWorkout()
+    {
+
+
+//        myRef.push().setValue(routines);
+
+        mWorkout = mListener.getWorkoutFromFragment();
+        if(mWorkout==null)
+            Toast.makeText(AddWorkoutActivity.this, "Please complete the exercise", Toast.LENGTH_SHORT).show();
+        else{
+            db.insertWorkout(mWorkout,-1);
+            saveToFirebase();
+
+            Toast.makeText(AddWorkoutActivity.this, "Workout added successfully", Toast.LENGTH_SHORT).show();
+            startActivity(new Intent(AddWorkoutActivity.this,AddWorkoutActivity.class));
+        }
+    }
+
+    public void saveToFirebase()
+    {
+        List<Workout> workoutList = db.getUserWorkouts();
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        final DatabaseReference myRef = database.getReference(DatabaseTableNames.ROUTINES);
+        System.out.println("SAVING INTO FIREBASE");
+        myRef.orderByChild("userId").equalTo("HjyyS2p3WlgsBubDWavCp6K5DsQ2").addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    System.out.println("Exits");
+                } else {
+                    System.out.println("Doesnt exits");
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
     }
 
     @Override
