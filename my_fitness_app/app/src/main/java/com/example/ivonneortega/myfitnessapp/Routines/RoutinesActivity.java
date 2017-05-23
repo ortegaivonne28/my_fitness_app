@@ -368,18 +368,17 @@ public class RoutinesActivity extends AppCompatActivity
 
     @Override
     public void saveRoutine(Routines routines) {
-        FirebaseDatabase database = FirebaseDatabase.getInstance();
-        DatabaseReference myRef = database.getReference(DatabaseTableNames.ROUTINES);
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-        routines.setUserId(currentUser.getUid());
-
-        myRef.push().setValue(routines);
 
         FitnessDBHelper db = FitnessDBHelper.getInstance(this);
         routines = db.insertRoutine(routines);
 
-
-
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        DatabaseReference myRef = database.getReference(DatabaseTableNames.ROUTINES);
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        routines.setUserId(currentUser.getUid());
+        routines.setId(String.valueOf(routines.getId()));
+        myRef.push().setValue(routines);
+        
         startActivity(new Intent(getApplication(), RoutinesActivity.class));
         finish();
     }

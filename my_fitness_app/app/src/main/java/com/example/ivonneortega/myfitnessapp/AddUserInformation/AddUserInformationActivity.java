@@ -71,7 +71,13 @@ public class AddUserInformationActivity extends AppCompatActivity
         myRef.push().setValue(current);
 
         FitnessDBHelper db = FitnessDBHelper.getInstance(this);
-        long id = db.insertUserInformation(currentUser.getUid(),name,currentUser.getEmail(),weight,weightGoal,age);
+        User user = new User();
+        user.setId(currentUser.getUid());
+        user.setName(name);
+        user.setEmail(current.getEmail());
+        user.setWeight(weight);
+        user.setDesiredWeight(weightGoal);
+        long id = db.insertUserInformation(user);
         System.out.println(id);
 
         mWorkoutHashMap = new HashMap<>();
@@ -102,6 +108,8 @@ public class AddUserInformationActivity extends AppCompatActivity
 
         FitnessDBHelper db = FitnessDBHelper.getInstance(this);
         routines = db.insertRoutine(routines);
+
+        routines.setId(String.valueOf(routines.getId()));
 
         myRef.push().setValue(routines);
 

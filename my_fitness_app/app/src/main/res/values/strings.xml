@@ -33,4 +33,5 @@
     <string name="title_activity_exercises_per_days">ExercisesPerDaysActivity</string>
     <string name="title_activity_start_workout">StartWorkoutActivity</string>
     <string name="title_activity_add_workout">AddWorkoutActivity</string>
+    <string name="title_activity_friends">FriendsActivity</string>
 </resources>

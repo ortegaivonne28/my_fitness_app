@@ -29,6 +29,11 @@
     <color name="colorGradientEndWorkoutAndCardio">#9E1098</color>
     <color name="colorAccentWorkoutAndCardio">#FF1818</color>
 
+    <color name="colorPrimaryFriends">#4E9E27</color>
+    <color name="colorPrimaryDarkFriends">#38741A</color>
+    <color name="colorGradientEndFriends">#B9A513</color>
+    <color name="colorAccentFriends">#1897FF</color>
+
 
 
 

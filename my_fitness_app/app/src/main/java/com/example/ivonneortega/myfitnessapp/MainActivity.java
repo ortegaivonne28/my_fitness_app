@@ -28,6 +28,7 @@ import android.widget.Toast;
 
 import com.example.ivonneortega.myfitnessapp.AddWorkout.AddWorkoutActivity;
 import com.example.ivonneortega.myfitnessapp.Data.Workout;
+import com.example.ivonneortega.myfitnessapp.Friends.FriendsActivity;
 import com.example.ivonneortega.myfitnessapp.Routines.RoutinesActivity;
 import com.example.ivonneortega.myfitnessapp.Workout.StartWorkoutActivity;
 import com.google.android.gms.auth.api.Auth;
@@ -178,7 +179,7 @@ public class MainActivity extends FragmentActivity
         } else if (id == R.id.nav_cardio) {
 
         } else if (id == R.id.nav_friends) {
-
+            startActivity(new Intent(MainActivity.this, FriendsActivity.class));
         } else if (id == R.id.nav_challenges) {
 
         } else if (id == R.id.nav_settings) {

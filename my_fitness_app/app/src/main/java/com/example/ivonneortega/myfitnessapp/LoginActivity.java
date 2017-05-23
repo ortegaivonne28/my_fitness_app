@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.ivonneortega.myfitnessapp.AddUserInformation.AddUserInformationActivity;
+import com.example.ivonneortega.myfitnessapp.Data.User;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -90,6 +91,25 @@ public class LoginActivity extends AppCompatActivity
                 @Override
                 public void onDataChange(DataSnapshot dataSnapshot) {
                     if (dataSnapshot.exists()) {
+
+                        boolean exit=true;
+                        int counter = 1;
+                        String key = dataSnapshot.getValue().toString();
+                        while (exit)
+                        {
+                            if(key.charAt(counter)=='=')
+                                exit = false;
+                            else
+                                counter++;
+                        }
+
+                        key = key.substring(1,counter);
+
+                        User myUser = dataSnapshot.child(key).getValue(User.class);
+
+                        insertUserToDB(myUser);
+
+
                         startActivity(new Intent(LoginActivity.this, MainActivity.class));
                     } else {
                         startActivity(new Intent(LoginActivity.this, AddUserInformationActivity.class));
@@ -104,6 +124,12 @@ public class LoginActivity extends AppCompatActivity
                 }
             });
 
+    }
+
+    public void insertUserToDB(User user)
+    {
+        FitnessDBHelper db = FitnessDBHelper.getInstance(this);
+        db.insertUserInformation(user);
     }
 
 

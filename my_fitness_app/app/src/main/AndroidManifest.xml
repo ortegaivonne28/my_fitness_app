@@ -49,6 +49,11 @@
             android:label="@string/title_activity_add_workout"
             android:theme="@style/WorkoutAndCardioTheme">
         </activity>
+        <activity
+            android:name=".Friends.FriendsActivity"
+            android:label="@string/title_activity_friends"
+            android:theme="@style/FriendsTheme">
+        </activity>
     </application>
 
 </manifest>

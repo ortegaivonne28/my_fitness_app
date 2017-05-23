@@ -45,5 +45,12 @@
         <item name="colorAccent">@color/colorAccentWorkoutAndCardio</item>
     </style>
 
+    <style name="FriendsTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="colorPrimary">@color/colorPrimaryFriends</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDarkFriends</item>
+        <item name="colorAccent">@color/colorAccentFriends</item>
+    </style>
+
+
 
 </resources>

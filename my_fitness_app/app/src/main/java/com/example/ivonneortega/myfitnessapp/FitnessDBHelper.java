@@ -14,6 +14,7 @@ import com.example.ivonneortega.myfitnessapp.Data.Sets;
 import com.example.ivonneortega.myfitnessapp.Data.SingleExercise;
 import com.example.ivonneortega.myfitnessapp.Data.SuperSet;
 import com.example.ivonneortega.myfitnessapp.Data.TripleSet;
+import com.example.ivonneortega.myfitnessapp.Data.User;
 import com.example.ivonneortega.myfitnessapp.Data.Week;
 import com.example.ivonneortega.myfitnessapp.Data.Workout;
 
@@ -53,6 +54,7 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
 
     public static final String COL_ROUTINE_ID = "routine_id";
     public static final String COL_ROUTINE_NAME = "routine_name";
+    public static final String COL_USER_ID = "user_id";
 
     public static final String COL_WEEK_ID = "week_id";
     //ROUTINE ID
@@ -146,6 +148,7 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
             "CREATE TABLE " + ROUTINES_TABLE_NAME +
                     "(" +
                     COL_ROUTINE_ID + " INTEGER PRIMARY KEY, " +
+                    COL_USER_ID + " TEXT," +
                     COL_ROUTINE_NAME + " TEXT"+ ")";
 
     private static final String CREATE_TYPE_OF_EXERCISE_TABLE =
@@ -496,15 +499,14 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
 
     }
 
-    public long insertUserInformation(String id, String name, String email, float weight, float desiredWeight, int age)
+    public long insertUserInformation(User user)
     {
         ContentValues values = new ContentValues();
-        values.put(COL_USER_NAME, name);
-        values.put(COL_USER_EMAIL, email);
-        values.put(COL_USER_CURRENT_WEIGHT, weight);
-        values.put(COL_USER_DESIRED_WEGIHT, desiredWeight);
-        values.put(COL_USER_AGE, age);
-
+        values.put(COL_USER_NAME, user.getName());
+        values.put(COL_USER_EMAIL, user.getEmail());
+        values.put(COL_USER_CURRENT_WEIGHT, user.getWeight());
+        values.put(COL_USER_DESIRED_WEGIHT, user.getDesiredWeight());
+//        values.put(COL_USER_AGE, user.);
 
         SQLiteDatabase db = this.getWritableDatabase();
         long returnId = db.insert(USER_TABLE_NAME, USER_COLUMNS, values);
@@ -684,6 +686,7 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
                 routines = new Routines();
                 routines.setId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_ROUTINE_ID))));
                 routines.setName(cursor.getString(cursor.getColumnIndex(COL_ROUTINE_NAME)));
+                routines.setUserId(cursor.getString(cursor.getColumnIndex(COL_USER_ID)));
                 cursor.moveToNext();
                 list.add(routines);
             }
@@ -716,6 +719,7 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
                 routines = new Routines();
                 routines.setId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_ROUTINE_ID))));
                 routines.setName(cursor.getString(cursor.getColumnIndex(COL_ROUTINE_NAME)));
+                routines.setUserId(String.valueOf(cursor.getColumnIndex(COL_USER_ID)));
 
 
                 List<Week> listWeek = new ArrayList<>();
@@ -1360,6 +1364,7 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
         List<Week> weekList = routines.getWeeks();
         ContentValues values = new ContentValues();
         values.put(COL_ROUTINE_NAME, routines.getName());
+        values.put(COL_USER_ID,routines.getUserId());
         SQLiteDatabase db = this.getWritableDatabase();
         long routineId = db.insert(ROUTINES_TABLE_NAME, null, values);
         routines.setId(String.valueOf(routineId));
