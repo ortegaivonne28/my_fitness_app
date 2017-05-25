@@ -1,8 +1,12 @@
 package com.example.ivonneortega.myfitnessapp;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -10,8 +14,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.AlertDialog;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -28,6 +34,7 @@ import android.widget.Toast;
 
 import com.example.ivonneortega.myfitnessapp.AddWorkout.AddWorkoutActivity;
 import com.example.ivonneortega.myfitnessapp.Challenges.ChallengesActivity;
+import com.example.ivonneortega.myfitnessapp.Data.Challenges;
 import com.example.ivonneortega.myfitnessapp.Data.Workout;
 import com.example.ivonneortega.myfitnessapp.Friends.FriendsActivity;
 import com.example.ivonneortega.myfitnessapp.Routines.RoutinesActivity;
@@ -39,6 +46,11 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Status;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -57,6 +69,7 @@ public class MainActivity extends FragmentActivity
 
     public static final String DAY_DATE = "day";
     public static final String TODAY = "mDay";
+    private BroadcastReceiver mReceiver;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -90,7 +103,69 @@ public class MainActivity extends FragmentActivity
                 .build();
 
 
+        mReceiver = new BroadcastReceiver() {
+            @Override
+            public void onReceive(Context context, Intent intent) {
+                String title = intent.getStringExtra("title");
+                String name = intent.getStringExtra("name");
+                String uniqueId = intent.getStringExtra("id");
+                dialogToAcceptOrDenyChallenge(title,name,uniqueId);
+            }
+        };
 
+        LocalBroadcastManager.getInstance(this).registerReceiver(mReceiver,new IntentFilter("challenge"));
+
+
+    }
+
+    public void dialogToAcceptOrDenyChallenge(String title, String name, final String challengeId)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(name+" has challenged you to "+title)
+                .setPositiveButton("Accept", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        FitnessDBHelper.getInstance(mViewPager.getContext()).updateStatusChallenge(challengeId,DatabaseTableNames.ACCEPTED);
+                        updateStatusChallengeInDatabase(challengeId,DatabaseTableNames.ACCEPTED);
+                    }
+                })
+                .setNegativeButton("Deny", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        FitnessDBHelper.getInstance(mViewPager.getContext()).updateStatusChallenge(challengeId,DatabaseTableNames.ACCEPTED);
+                        updateStatusChallengeInDatabase(challengeId,DatabaseTableNames.REJECTED);
+                    }
+                });
+        // Create the AlertDialog object and return it
+        builder.create();
+        builder.show();
+    }
+
+    public void updateStatusChallengeInDatabase(final String uniqueId, final String status)
+    {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference(DatabaseTableNames.CHALLENGES);
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    myRef.child(uniqueId).child("status").setValue(status);
+
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        LocalBroadcastManager.getInstance(this).unregisterReceiver(mReceiver);
     }
 
     @Override

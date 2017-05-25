@@ -1,6 +1,5 @@
 package com.example.ivonneortega.myfitnessapp.Challenges;
 
-import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -12,18 +11,26 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.ivonneortega.myfitnessapp.Data.Challenges;
+import com.example.ivonneortega.myfitnessapp.DatabaseTableNames;
 import com.example.ivonneortega.myfitnessapp.FitnessDBHelper;
 import com.example.ivonneortega.myfitnessapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
 
-public class SeeAllChallenges extends Fragment {
+public class SeeAllChallenges extends Fragment implements ChallengesRecyclerViewAdapter.ChallengesRecyclerInterface {
 
 
     private OnFragmentInteractionListener mListener;
-    private RecyclerView mRecyclerView;
-    private ChallengesRecyclerViewAdapter mAdapter;
+    private RecyclerView mPendingRecyclerView,mAcceptedRecyclerView;
+    private ChallengesRecyclerViewAdapter mPendingAdapter,mAcceptedAdapter;
+    private List<Challenges> acceptedList;
 
     public SeeAllChallenges() {
         // Required empty public constructor
@@ -81,20 +88,61 @@ public class SeeAllChallenges extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
-        FitnessDBHelper db = FitnessDBHelper.getInstance(mRecyclerView.getContext());
-        List<Challenges> challengesList = db.getAllChallenges();
+        mPendingRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
+        FitnessDBHelper db = FitnessDBHelper.getInstance(mPendingRecyclerView.getContext());
+        List<Challenges> pendingList = db.getAllPendingChallenges();
 
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext(),LinearLayoutManager.VERTICAL,false));
-        mAdapter = new ChallengesRecyclerViewAdapter(challengesList);
-        mRecyclerView.setAdapter(mAdapter);
+        mPendingRecyclerView.setLayoutManager(new LinearLayoutManager(mPendingRecyclerView.getContext(),LinearLayoutManager.VERTICAL,false));
+        mPendingAdapter = new ChallengesRecyclerViewAdapter(pendingList,this);
+        mPendingRecyclerView.setAdapter(mPendingAdapter);
+
+
+        mAcceptedRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view2);
+        acceptedList = db.getAllAceptedChallenges();
+
+        mAcceptedRecyclerView.setLayoutManager(new LinearLayoutManager(mPendingRecyclerView.getContext(),LinearLayoutManager.VERTICAL,false));
+        mAcceptedAdapter = new ChallengesRecyclerViewAdapter(acceptedList,this);
+        mAcceptedRecyclerView.setAdapter(mAcceptedAdapter);
+
+
 
 
     }
 
-    public void insertChallengeInFirebase()
+    public void updateStatusChallengeInDatabase(final Challenges challenges)
     {
+        final FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference(DatabaseTableNames.CHALLENGES);
+        final FitnessDBHelper db = FitnessDBHelper.getInstance(mAcceptedRecyclerView.getContext());
+        FirebaseAuth mAuth = FirebaseAuth.getInstance();
 
+
+
+        myRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+
+                    System.out.println("STATUS: "+challenges.getStatus());
+                    myRef.child(challenges.getUniqueKey()).child("status").setValue(challenges.getStatus());
+
+                    }
+                }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    @Override
+    public void approvedAChallenge(Challenges challenge) {
+        acceptedList.add(challenge);
+        mAcceptedAdapter.notifyItemInserted(acceptedList.size()-1);
+        challenge.setStatus(DatabaseTableNames.ACCEPTED);
+        updateStatusChallengeInDatabase(challenge);
     }
 
     public interface OnFragmentInteractionListener {
@@ -102,3 +150,4 @@ public class SeeAllChallenges extends Fragment {
         void onFragmentInteraction(Uri uri);
     }
 }
+

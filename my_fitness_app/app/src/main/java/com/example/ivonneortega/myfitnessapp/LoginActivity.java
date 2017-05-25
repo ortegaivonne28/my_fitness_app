@@ -97,6 +97,8 @@ public class LoginActivity extends AppCompatActivity
 //            startActivity(new Intent(LoginActivity.this, MainActivity.class));
             isInDatabase(currentUser);
         }
+        else
+            mAuth.signOut();
 
     }
 
@@ -416,12 +418,15 @@ public class LoginActivity extends AppCompatActivity
                         String friendId = dataSnapshot.child(key).child("friendId").getValue(String.class);
                         String title = dataSnapshot.child(key).child("title").getValue(String.class);
                         String userId = dataSnapshot.child(key).child("userId").getValue(String.class);
+                        String status = dataSnapshot.child(key).child("status").getValue(String.class);
 
                         Challenges challenge = new Challenges();
                         challenge.setUserId(userId);
                         challenge.setTitle(title);
                         challenge.setUniqueKey(key);
+                        System.out.println("UNIQUE KEY: "+key);
                         challenge.setFriendId(friendId);
+                        challenge.setStatus(status);
 
                         if(!db.doesChallengeExits(challenge.getUniqueKey())){
 
@@ -568,7 +573,8 @@ public class LoginActivity extends AppCompatActivity
 
             } else {
 
-                mAuth.signOut();
+//                mAuth.signOut();
+                System.out.println("THIS 2");
                 Toast.makeText(LoginActivity.this, "Authentication failed, please try again",
                         Toast.LENGTH_SHORT).show();
             }
@@ -588,7 +594,8 @@ public class LoginActivity extends AppCompatActivity
 //                            startActivity(new Intent(LoginActivity.this, MainActivity.class));
                         } else {
                             // If sign in fails, display a message to the user.
-                            mAuth.signOut();
+//                            mAuth.signOut();
+//                            System.out.println(task.getResult().toString());
                             Toast.makeText(LoginActivity.this, "Authentication failed, please try again",
                                     Toast.LENGTH_SHORT).show();
                         }

@@ -672,6 +672,7 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
         values.put(COL_CHALLENGE_ID_CREATOR,challenge.getCreatorId());
         values.put(COL_CHALLENGE_TITLE,challenge.getTitle());
         values.put(COL_CHALLENGE_STATUS,challenge.getStatus());
+        values.put(COL_CHALLENGE_UNIQUE_KEY_FROM_FIREBASE,challenge.getUniqueKey());
 
 
         SQLiteDatabase db = this.getWritableDatabase();
@@ -807,6 +808,90 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
         return challengesList;
     }
 
+    public List<Challenges> getAllPendingChallenges()
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+
+        Cursor cursor = db.query(CHALLENGE_TABLE_NAME, // a. table
+                null, // b. column names
+                COL_CHALLENGE_STATUS+" = ?", // c. selections
+                new String[]{DatabaseTableNames.PENDING}, // d. selections args
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+
+        List<Challenges> challengesList = new ArrayList<>();
+        Challenges challenge;
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast())
+            {
+                challenge = new Challenges();
+                challenge.setId(String.valueOf(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_ID))));
+                challenge.setFriendId(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_FRIEND_ID)));
+                challenge.setUserId(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_USER_ID)));
+                challenge.setWorkoutFriend(getWorkoutInChallenge(challenge.getId(),DatabaseTableNames.CHALLENGE_FRIEND));
+                challenge.setWorkoutUser(getWorkoutInChallenge(challenge.getId(),DatabaseTableNames.CHALLENGE_USER));
+                challenge.setTitle(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_TITLE)));
+                challenge.setCreatorId(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_ID_CREATOR)));
+                challenge.setStatus(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_STATUS)));
+                challenge.setUniqueKey(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_UNIQUE_KEY_FROM_FIREBASE)));
+
+                challengesList.add(challenge);
+
+                cursor.moveToNext();
+            }
+            cursor.close();
+            return challengesList;
+
+        }
+        cursor.close();
+        return challengesList;
+    }
+
+    public List<Challenges> getAllAceptedChallenges()
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+
+        Cursor cursor = db.query(CHALLENGE_TABLE_NAME, // a. table
+                null, // b. column names
+                COL_CHALLENGE_STATUS+" = ?", // c. selections
+                new String[]{DatabaseTableNames.ACCEPTED}, // d. selections args
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+
+        List<Challenges> challengesList = new ArrayList<>();
+        Challenges challenge;
+        if (cursor.moveToFirst()) {
+            while (!cursor.isAfterLast())
+            {
+                challenge = new Challenges();
+                challenge.setId(String.valueOf(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_ID))));
+                challenge.setFriendId(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_FRIEND_ID)));
+                challenge.setUserId(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_USER_ID)));
+                challenge.setWorkoutFriend(getWorkoutInChallenge(challenge.getId(),DatabaseTableNames.CHALLENGE_FRIEND));
+                challenge.setWorkoutUser(getWorkoutInChallenge(challenge.getId(),DatabaseTableNames.CHALLENGE_USER));
+                challenge.setTitle(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_TITLE)));
+                challenge.setCreatorId(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_ID_CREATOR)));
+                challenge.setStatus(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_STATUS)));
+                challenge.setUniqueKey(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_UNIQUE_KEY_FROM_FIREBASE)));
+
+                challengesList.add(challenge);
+
+                cursor.moveToNext();
+            }
+            cursor.close();
+            return challengesList;
+
+        }
+        cursor.close();
+        return challengesList;
+    }
+
     public List<Challenges> getChallengeByFriend(String friendId)
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -848,6 +933,35 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
         cursor.close();
         return challengesList;
     }
+
+    public long getChallengeId(String uniqueId)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+
+        Cursor cursor = db.query(CHALLENGE_TABLE_NAME, // a. table
+                null, // b. column names
+                COL_CHALLENGE_UNIQUE_KEY_FROM_FIREBASE+" = ?", // c. selections
+                new String[]{uniqueId}, // d. selections args
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+
+        List<Challenges> challengesList = new ArrayList<>();
+        Challenges challenge;
+        if (cursor.moveToFirst()) {
+            long id = cursor.getInt(cursor.getColumnIndex(COL_CHALLENGE_ID));
+                cursor.close();
+                return id;
+
+        }
+
+
+        cursor.close();
+        return -1;
+    }
+
 
 
 
@@ -1025,6 +1139,29 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
         return false;
     }
 
+    public boolean doesFriendExitsInDatabase(String friendId)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+
+        Cursor cursor = db.query(FRIEND_TABLE_NAME, // a. table
+                null, // b. column names
+                COL_FRIEND_ID + " = ? ", // c. selections
+                new String[]{friendId}, // d. selections args
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+
+
+        if (cursor.moveToFirst()) {
+            return true;
+
+        }
+        cursor.close();
+        return false;
+    }
+
     public void updateWorkoutForToday(String today, String workoutId)
     {
 
@@ -1039,6 +1176,21 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
 
 
         db.update(DAY_USER_NAME,values,COL_DAY_ID+" = "+dayId,null);
+        db.close();
+    }
+
+    public void updateStatusChallenge(String uniqueId, String status)
+    {
+
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+        values.put(COL_CHALLENGE_STATUS,status);
+
+        long id = getChallengeId(uniqueId);
+
+        db.update(CHALLENGE_TABLE_NAME,values,COL_CHALLENGE_ID+" = "+String.valueOf(id),null);
         db.close();
     }
 
@@ -1218,11 +1370,9 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
 
 
         if (cursor.moveToFirst()) {
-            db.close();
+            cursor.close();
             return true;
         }
-
-
         cursor.close();
         return false;
     }
