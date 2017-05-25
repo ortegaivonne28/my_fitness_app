@@ -12,6 +12,15 @@ public class Exercise {
     private String mId, mWorkoutID;
     private String mName;
     private List<Sets> mSetsList;
+    private String type;
+
+    public String getType() {
+        return type;
+    }
+
+    public void setType(String type) {
+        this.type = type;
+    }
 
     public List<Sets> getSetsList() {
         return mSetsList;

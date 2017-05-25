@@ -27,6 +27,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.ivonneortega.myfitnessapp.AddWorkout.AddWorkoutActivity;
+import com.example.ivonneortega.myfitnessapp.Challenges.ChallengesActivity;
 import com.example.ivonneortega.myfitnessapp.Data.Workout;
 import com.example.ivonneortega.myfitnessapp.Friends.FriendsActivity;
 import com.example.ivonneortega.myfitnessapp.Routines.RoutinesActivity;
@@ -182,8 +183,9 @@ public class MainActivity extends FragmentActivity
             startActivity(new Intent(MainActivity.this, FriendsActivity.class));
         } else if (id == R.id.nav_challenges) {
 
+            startActivity(new Intent(MainActivity.this, ChallengesActivity.class));
         } else if (id == R.id.nav_settings) {
-
+            this.deleteDatabase(FitnessDBHelper.DATABASE_NAME);
             FirebaseAuth mAuth = FirebaseAuth.getInstance();
             mAuth.signOut();
 

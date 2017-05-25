@@ -13,6 +13,7 @@
             android:name=".MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/MainActivityTheme">
+
         </activity>
         <activity
             android:name=".LoginActivity"
@@ -54,6 +55,13 @@
             android:label="@string/title_activity_friends"
             android:theme="@style/FriendsTheme">
         </activity>
+        <activity
+            android:name=".Challenges.ChallengesActivity"
+            android:label="@string/title_activity_challenges"
+            android:theme="@style/AppTheme">
+        </activity>
+
+        <service android:name=".ChallengesService" />
     </application>
 
 </manifest>

@@ -31,13 +31,24 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.ivonneortega.myfitnessapp.AddUserInformation.AddUserInformationActivity;
 import com.example.ivonneortega.myfitnessapp.AddUserInformation.ExerciseRecyclerViewAdapter;
 import com.example.ivonneortega.myfitnessapp.Data.Day;
 import com.example.ivonneortega.myfitnessapp.Data.Exercise;
+import com.example.ivonneortega.myfitnessapp.Data.User;
 import com.example.ivonneortega.myfitnessapp.Data.Workout;
 import com.example.ivonneortega.myfitnessapp.DatabaseTableNames;
 import com.example.ivonneortega.myfitnessapp.FitnessDBHelper;
+import com.example.ivonneortega.myfitnessapp.LoginActivity;
+import com.example.ivonneortega.myfitnessapp.MainActivity;
 import com.example.ivonneortega.myfitnessapp.R;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.HashMap;
 import java.util.List;
@@ -48,7 +59,7 @@ public class ExercisesPerDaysActivity extends AppCompatActivity
     ExercisesPerDaysActivity.ExercisesPageAdapter mDemoCollectionPagerAdapter;
     ViewPager mViewPager;
     HashMap<String, Day> mDayHashMap;
-    String mId;
+    String mId, mRoutineId;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,7 +95,7 @@ public class ExercisesPerDaysActivity extends AppCompatActivity
 
         Intent intent = getIntent();
         mId = intent.getStringExtra("id");
-
+        mRoutineId = intent.getStringExtra("routineId");
 
         mDayHashMap = db.getDayById(mId);
 
@@ -106,6 +117,47 @@ public class ExercisesPerDaysActivity extends AppCompatActivity
 
 
     }
+
+    public void updateRoutinesInFirebase()
+    {
+        FirebaseDatabase database = FirebaseDatabase.getInstance();
+        final DatabaseReference myRef = database.getReference(DatabaseTableNames.ROUTINES);
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseUser user = auth.getCurrentUser();
+        myRef.orderByChild("id").equalTo(mRoutineId).orderByChild("userId").equalTo(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (dataSnapshot.exists()) {
+                    System.out.println("START ACTIVITY");
+                    boolean exit=true;
+                    int counter = 1;
+                    String key = dataSnapshot.getValue().toString();
+                    while (exit)
+                    {
+                        if(key.charAt(counter)=='=')
+                            exit = false;
+                        else
+                            counter++;
+                    }
+
+                    key = key.substring(1,counter);
+
+                    User myUser = dataSnapshot.child(key).getValue(User.class);
+
+
+
+
+                }
+
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+            }
+        });
+    }
+
     @Override
     public boolean dispatchTouchEvent(MotionEvent event) {
         if (event.getAction() == MotionEvent.ACTION_DOWN) {

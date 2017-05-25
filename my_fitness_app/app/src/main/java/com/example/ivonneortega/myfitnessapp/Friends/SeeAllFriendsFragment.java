@@ -11,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.ivonneortega.myfitnessapp.Data.Friend;
 import com.example.ivonneortega.myfitnessapp.FitnessDBHelper;
@@ -62,8 +63,9 @@ public class SeeAllFriendsFragment extends Fragment implements FriendsRecyclerVi
         mRecyclerView = (RecyclerView) view.findViewById(R.id.recycler_view);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext(),LinearLayoutManager.VERTICAL,false));
         List<Friend> friends = FitnessDBHelper.getInstance(mRecyclerView.getContext()).getAllFriends();
-        mAdapter = new FriendsRecyclerViewAdapter(friends,this,null);
+        mAdapter = new FriendsRecyclerViewAdapter(friends,this,null,null);
         mRecyclerView.setAdapter(mAdapter);
+
 
         mFab = (FloatingActionButton) view.findViewById(R.id.fab);
         mFab.setOnClickListener(new View.OnClickListener() {

@@ -70,7 +70,7 @@ implements ItemTouchHelperAdapter{
             holder.mRoot.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mWeekInterface.clickedOnItemWeekRecyclerView(mWeekList.get(position).getId());
+                    mWeekInterface.clickedOnItemWeekRecyclerView(mWeekList.get(position).getId(),mWeekList.get(position).getRoutineId());
                 }
             });
         }
@@ -130,7 +130,7 @@ implements ItemTouchHelperAdapter{
 
     public interface weekInterface
     {
-        void clickedOnItemWeekRecyclerView(String id);
+        void clickedOnItemWeekRecyclerView(String id, String routineId);
         void removeWeek(Week week);
     }
 

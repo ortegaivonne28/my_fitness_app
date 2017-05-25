@@ -18,22 +18,25 @@ import com.example.ivonneortega.myfitnessapp.R;
 import java.util.List;
 
 
-public class WorkoutToChallenge extends Fragment {
+public class WorkoutToChallenge extends Fragment implements FriendsRecyclerViewAdapter.WorkoutChallengeInRecyclerViewInterface {
 
 
-    private OnFragmentInteractionListener mListener;
+    private WorkoutToChallengeInterface mListener;
     private RecyclerView mRecyclerView;
     private FriendsRecyclerViewAdapter mAdapter;
+    private String mFriendId;
+
+    public static final String FRIEND_ID = "friend";
 
     public WorkoutToChallenge() {
         // Required empty public constructor
     }
 
 
-    public static WorkoutToChallenge newInstance() {
+    public static WorkoutToChallenge newInstance(String friendId) {
         WorkoutToChallenge fragment = new WorkoutToChallenge();
         Bundle args = new Bundle();
-
+        args.putString(FRIEND_ID,friendId);
         fragment.setArguments(args);
         return fragment;
     }
@@ -42,7 +45,7 @@ public class WorkoutToChallenge extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            mFriendId = getArguments().getString(FRIEND_ID);
         }
     }
 
@@ -53,9 +56,9 @@ public class WorkoutToChallenge extends Fragment {
         return inflater.inflate(R.layout.fragment_workout_to_challenge, container, false);
     }
 
-    public void onButtonPressed(Uri uri) {
+    public void onButtonPressed(Workout workut) {
         if (mListener != null) {
-            mListener.onFragmentInteraction(uri);
+            mListener.insertChallenge(workut,mFriendId);
         }
     }
 
@@ -67,15 +70,15 @@ public class WorkoutToChallenge extends Fragment {
         List<Workout> workouts = FitnessDBHelper.getInstance(mRecyclerView.getContext()).getWorkoutsThatDontBelogToRoutine();
         mRecyclerView.setLayoutManager(new LinearLayoutManager(mRecyclerView.getContext(),LinearLayoutManager.VERTICAL,false));
 
-        mAdapter = new FriendsRecyclerViewAdapter(null,null,workouts);
+        mAdapter = new FriendsRecyclerViewAdapter(null,null,workouts,this);
         mRecyclerView.setAdapter(mAdapter);
     }
 
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-        if (context instanceof OnFragmentInteractionListener) {
-            mListener = (OnFragmentInteractionListener) context;
+        if (context instanceof WorkoutToChallengeInterface) {
+            mListener = (WorkoutToChallengeInterface) context;
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnFragmentInteractionListener");
@@ -88,9 +91,14 @@ public class WorkoutToChallenge extends Fragment {
         mListener = null;
     }
 
+    @Override
+    public void clickedOnWorkoutToChallengeFriend(Workout workout) {
+        mListener.insertChallenge(workout,mFriendId);
+    }
 
-    public interface OnFragmentInteractionListener {
+
+    public interface WorkoutToChallengeInterface {
         // TODO: Update argument type and name
-        void onFragmentInteraction(Uri uri);
+        void insertChallenge(Workout workout, String friendId);
     }
 }

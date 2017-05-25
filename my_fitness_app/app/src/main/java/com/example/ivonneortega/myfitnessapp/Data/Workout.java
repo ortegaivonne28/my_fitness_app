@@ -9,12 +9,20 @@ import java.util.List;
 
 public class Workout {
 
-    private String mId, mDayId;
+    private String mId, mDayId, mChallengeId;
     private String mNameOfWorkout;
     private List<Exercise> mExercises;
 
     public String getDayId() {
         return mDayId;
+    }
+
+    public String getChallengeId() {
+        return mChallengeId;
+    }
+
+    public void setChallengeId(String challengeId) {
+        mChallengeId = challengeId;
     }
 
     public void setDayId(String dayId) {

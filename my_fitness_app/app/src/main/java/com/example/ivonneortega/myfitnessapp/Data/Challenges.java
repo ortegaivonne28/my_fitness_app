@@ -6,8 +6,17 @@ package com.example.ivonneortega.myfitnessapp.Data;
 
 public class Challenges {
 
-    private String mId, mFriendId, mUserId;
+    private String mId, mFriendId, mUserId, mCreatorId, mStatus, mTitle, mUniqueKey;
     private Workout mWorkoutFriend, mWorkoutUser;
+
+
+    public String getUniqueKey() {
+        return mUniqueKey;
+    }
+
+    public void setUniqueKey(String uniqueKey) {
+        mUniqueKey = uniqueKey;
+    }
 
     public Challenges(String id, String friendId, String userId, Workout workoutFriend, Workout workoutUser) {
         mId = id;
@@ -17,7 +26,41 @@ public class Challenges {
         mWorkoutUser = workoutUser;
     }
 
+    public String getTitle() {
+        return mTitle;
+    }
+
+    public void setTitle(String title) {
+        mTitle = title;
+    }
+
     public Challenges() {
+    }
+
+    public Challenges(String id, String friendId, String userId, String creatorId, String status, Workout workoutFriend, Workout workoutUser) {
+        mId = id;
+        mFriendId = friendId;
+        mUserId = userId;
+        mCreatorId = creatorId;
+        mStatus = status;
+        mWorkoutFriend = workoutFriend;
+        mWorkoutUser = workoutUser;
+    }
+
+    public String getCreatorId() {
+        return mCreatorId;
+    }
+
+    public void setCreatorId(String creatorId) {
+        mCreatorId = creatorId;
+    }
+
+    public String getStatus() {
+        return mStatus;
+    }
+
+    public void setStatus(String status) {
+        mStatus = status;
     }
 
     public String getId() {

@@ -26,15 +26,17 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter {
     private List<Workout> mWorkouts;
 
     FriendsInRecyclerViewInterface mFriendListener;
+    WorkoutChallengeInRecyclerViewInterface mWorkoutListener;
 
     public static final int VIEW_TYPE_FRIEND = 1;
     public static final int VIEW_TYPE_WORKOUT = 2;
 
 
-    public FriendsRecyclerViewAdapter(List<Friend> friendList, FriendsInRecyclerViewInterface listener, List<Workout> workout) {
+    public FriendsRecyclerViewAdapter(List<Friend> friendList, FriendsInRecyclerViewInterface listener, List<Workout> workout, WorkoutChallengeInRecyclerViewInterface listener1) {
         mFriendList = friendList;
         mWorkouts = workout;
         mFriendListener  = listener;
+        mWorkoutListener = listener1;
     }
 
 
@@ -74,7 +76,7 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter {
                                 })
                                 .setNegativeButton("No", new DialogInterface.OnClickListener() {
                                     public void onClick(DialogInterface dialog, int id) {
-                                        // User cancelled the dialog
+                                        mWorkoutListener.clickedOnWorkoutToChallengeFriend(mWorkouts.get(holder.getAdapterPosition()));
                                     }
                                 });
                         // Create the AlertDialog object and return it
@@ -89,7 +91,7 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter {
             ((WorkoutsViewHolder) holder).mRoot.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(((WorkoutsViewHolder) holder).mRoot.getContext(), "Clicked on item", Toast.LENGTH_SHORT).show();
+                    mWorkoutListener.clickedOnWorkoutToChallengeFriend(mWorkouts.get(holder.getAdapterPosition()));
                 }
             });
         }
@@ -99,9 +101,9 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemCount() {
         if(mFriendList==null)
-            return mFriendList.size();
-        else
             return mWorkouts.size();
+        else
+            return mFriendList.size();
     }
 
     @Override
@@ -138,5 +140,9 @@ public class FriendsRecyclerViewAdapter extends RecyclerView.Adapter {
 
     public interface FriendsInRecyclerViewInterface{
         void clickedOnFriendToChallenge(Friend friend);
+    }
+
+    public interface WorkoutChallengeInRecyclerViewInterface{
+        void clickedOnWorkoutToChallengeFriend(Workout workout);
     }
 }

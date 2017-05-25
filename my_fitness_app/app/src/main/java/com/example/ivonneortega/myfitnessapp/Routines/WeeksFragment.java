@@ -125,9 +125,9 @@ implements Routines2RecyclerViewAdapter.weekInterface{
 
     }
 
-    public void onButtonPressed(String id) {
+    public void onButtonPressed(String id, String routineId) {
         if (mListener != null) {
-            mListener.clickedOnWeek(id);
+            mListener.clickedOnWeek(id, routineId);
         }
     }
 
@@ -149,8 +149,8 @@ implements Routines2RecyclerViewAdapter.weekInterface{
     }
 
     @Override
-    public void clickedOnItemWeekRecyclerView(String id) {
-        mListener.clickedOnWeek(id);
+    public void clickedOnItemWeekRecyclerView(String id, String routineId) {
+        mListener.clickedOnWeek(id,routineId);
     }
 
     @Override
@@ -179,7 +179,7 @@ implements Routines2RecyclerViewAdapter.weekInterface{
 
     public interface WeekFragmentListener {
         // TODO: Update argument type and name
-        void clickedOnWeek(String id);
+        void clickedOnWeek(String id, String routineId);
         void removeRoutine(String id);
 //        void clickOnAddAnotherWeek(String id);
     }

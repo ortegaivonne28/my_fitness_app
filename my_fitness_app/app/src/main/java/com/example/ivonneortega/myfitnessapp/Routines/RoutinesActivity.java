@@ -328,9 +328,10 @@ public class RoutinesActivity extends AppCompatActivity
 
 
     @Override
-    public void clickedOnWeek(String id) {
+    public void clickedOnWeek(String id, String routineId) {
         Intent intent = new Intent(RoutinesActivity.this,ExercisesPerDaysActivity.class);
         intent.putExtra("id",id);
+        intent.putExtra("routineId",routineId);
         startActivity(intent);
     }
 
