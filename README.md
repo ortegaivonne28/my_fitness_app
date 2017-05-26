@@ -27,6 +27,10 @@ When addind exercises and weeks, a recycler view is used. The last position of t
 - Add friends.
 - Challenge friends using one of the custom workouts created in the app
 
+
+[Link to Google Play Store](https://play.google.com/store/apps/details?id=my.app.ivonneortega.myfitnessapp)
+
+
 #### Skills/languages/tools: Java, Android SDK, SQLite, Services, Threads, Firebase, Notifications.
 
 ## Screenshots

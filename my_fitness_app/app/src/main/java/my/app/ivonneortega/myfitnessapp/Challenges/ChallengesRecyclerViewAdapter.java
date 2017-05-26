@@ -72,7 +72,7 @@ public class ChallengesRecyclerViewAdapter extends RecyclerView.Adapter<Challeng
                         Toast.makeText(holder.mChallengeCreator.getContext(), "Have to wait for approval", Toast.LENGTH_SHORT).show();
                     }
                 }
-                if(mList.get(holder.getAdapterPosition()).getStatus().equalsIgnoreCase(DatabaseTableNames.ACCEPTED))
+                if(mList.size()>0 &&mList.get(holder.getAdapterPosition()).getStatus().equalsIgnoreCase(DatabaseTableNames.ACCEPTED))
                 {
                     holder.mRoot.setOnClickListener(new View.OnClickListener() {
                         @Override
