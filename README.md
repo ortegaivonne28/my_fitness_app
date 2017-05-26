@@ -31,11 +31,11 @@ When addind exercises and weeks, a recycler view is used. The last position of t
 
 ## Screenshots
 
-![image](/screenshots/1.jpg)
-![image](/screenshots/2.jpg)
-![image](/screenshots/3.jpg)
-![image](/screenshots/4.jpg)
-![image](/screenshots/5.jpg)
+![image](/screenshots/1.png)
+![image](/screenshots/2.png)
+![image](/screenshots/3.png)
+![image](/screenshots/4.png)
+![image](/screenshots/5.png)
 
 
 
