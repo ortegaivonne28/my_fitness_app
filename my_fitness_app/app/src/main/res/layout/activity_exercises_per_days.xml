@@ -21,6 +21,6 @@
         android:layout_gravity="start"
         android:fitsSystemWindows="true"
         app:headerLayout="@layout/nav_header_exercises_per_days"
-        app:menu="@menu/activity_exercises_per_days_drawer"/>
+        app:menu="@menu/activity_main_drawer"/>
 
 </android.support.v4.widget.DrawerLayout>

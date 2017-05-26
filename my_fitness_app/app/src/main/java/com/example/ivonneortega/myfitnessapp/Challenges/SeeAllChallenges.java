@@ -1,14 +1,18 @@
 package com.example.ivonneortega.myfitnessapp.Challenges;
 
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.example.ivonneortega.myfitnessapp.Data.Challenges;
 import com.example.ivonneortega.myfitnessapp.DatabaseTableNames;
@@ -23,6 +27,8 @@ import com.google.firebase.database.ValueEventListener;
 
 import java.util.List;
 
+import okhttp3.Challenge;
+
 
 public class SeeAllChallenges extends Fragment implements ChallengesRecyclerViewAdapter.ChallengesRecyclerInterface {
 
@@ -31,16 +37,19 @@ public class SeeAllChallenges extends Fragment implements ChallengesRecyclerView
     private RecyclerView mPendingRecyclerView,mAcceptedRecyclerView;
     private ChallengesRecyclerViewAdapter mPendingAdapter,mAcceptedAdapter;
     private List<Challenges> acceptedList;
+    private String mDay;
+
+    public static final String DAY = "day";
 
     public SeeAllChallenges() {
         // Required empty public constructor
     }
 
 
-    public static SeeAllChallenges newInstance() {
+    public static SeeAllChallenges newInstance(String day) {
         SeeAllChallenges fragment = new SeeAllChallenges();
         Bundle args = new Bundle();
-
+        args.putString(DAY,day);
         fragment.setArguments(args);
         return fragment;
     }
@@ -49,7 +58,7 @@ public class SeeAllChallenges extends Fragment implements ChallengesRecyclerView
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-
+            mDay = getArguments().getString(DAY);
         }
     }
 
@@ -143,6 +152,39 @@ public class SeeAllChallenges extends Fragment implements ChallengesRecyclerView
         mAcceptedAdapter.notifyItemInserted(acceptedList.size()-1);
         challenge.setStatus(DatabaseTableNames.ACCEPTED);
         updateStatusChallengeInDatabase(challenge);
+    }
+
+    @Override
+    public void clickedOnItemApproved(final Challenges challenge) {
+        if(mDay!=null)
+        {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+
+            final String day = mDay.substring(0,10);
+            builder.setTitle("Set challenge for:"+day);
+//            builder.setMessage("Would you like to set a challenge?")
+                   builder.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            FitnessDBHelper db = FitnessDBHelper.getInstance(getContext());
+                            if(!db.doesTodayExitInDatabase(mDay))
+                                db.insertUserDay(mDay,"-1","-1");
+
+                            db.updateChallengeForToday(mDay,challenge.getUniqueKey());
+
+
+                            Toast.makeText(getContext(), "Challenge set for "+day, Toast.LENGTH_SHORT).show();
+
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+
+            builder.create();
+            builder.show();
+        }
     }
 
     public interface OnFragmentInteractionListener {

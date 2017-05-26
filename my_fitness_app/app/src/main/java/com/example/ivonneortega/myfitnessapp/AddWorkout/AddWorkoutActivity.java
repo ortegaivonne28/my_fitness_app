@@ -245,7 +245,6 @@ public class AddWorkoutActivity extends AppCompatActivity
         routineFragment = CreateWorkoutFragment.newInstance(CreateWorkoutFragment.TYPE_USER_EDITING_WORKOUT,id);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, routineFragment)
-                .addToBackStack(null)
                 .commit();
         mListener = routineFragment;
 

@@ -1,5 +1,7 @@
 package com.example.ivonneortega.myfitnessapp;
 
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -9,6 +11,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.example.ivonneortega.myfitnessapp.AddUserInformation.AddUserInformationActivity;
@@ -55,6 +59,7 @@ public class LoginActivity extends AppCompatActivity
     private static final int RC_SIGN_IN = 123;
     private FirebaseAuth mAuth;
     private GoogleApiClient mGoogleApiClient;
+    private ImageView imageLogin;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +89,8 @@ public class LoginActivity extends AppCompatActivity
             }
         });
 
+        imageLogin = (ImageView) findViewById(R.id.image_login);
+
 
 
     }
@@ -91,6 +98,9 @@ public class LoginActivity extends AppCompatActivity
     @Override
     public void onStart() {
         super.onStart();
+
+        NotificationManager notificationManager = (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+        notificationManager.cancelAll();
         FirebaseUser currentUser = mAuth.getCurrentUser();
         if(currentUser!=null)
         {
@@ -98,7 +108,9 @@ public class LoginActivity extends AppCompatActivity
             isInDatabase(currentUser);
         }
         else
-            mAuth.signOut();
+        {
+            imageLogin.setVisibility(View.GONE);
+        }
 
     }
 
@@ -106,7 +118,6 @@ public class LoginActivity extends AppCompatActivity
     {
         FirebaseDatabase database = FirebaseDatabase.getInstance();
 
-        System.out.println(user.getUid());
         final DatabaseReference myRef = database.getReference("users");
             myRef.orderByChild("id").equalTo(user.getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
                 @Override
@@ -114,6 +125,8 @@ public class LoginActivity extends AppCompatActivity
                     if (dataSnapshot.exists()) {
                         boolean exit=true;
                         int counter = 1;
+
+
                         String key = dataSnapshot.getValue().toString();
                         while (exit)
                         {
@@ -574,7 +587,6 @@ public class LoginActivity extends AppCompatActivity
             } else {
 
 //                mAuth.signOut();
-                System.out.println("THIS 2");
                 Toast.makeText(LoginActivity.this, "Authentication failed, please try again",
                         Toast.LENGTH_SHORT).show();
             }

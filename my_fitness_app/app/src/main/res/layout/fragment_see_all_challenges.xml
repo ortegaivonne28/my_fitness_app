@@ -1,33 +1,46 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="match_parent"
-             android:layout_height="match_parent"
-              android:orientation="vertical"
-             tools:context="com.example.ivonneortega.myfitnessapp.Challenges.SeeAllChallenges">
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+            xmlns:tools="http://schemas.android.com/tools"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/login_background"
+            android:orientation="vertical"
+            tools:context="com.example.ivonneortega.myfitnessapp.Challenges.SeeAllChallenges">
 
-    <TextView
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="PENDING"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"/>
+        android:orientation="vertical">
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:id="@+id/recycler_view"
-        android:layout_marginTop="10dp"
-        android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:text="PENDING"
+            android:textColor="@android:color/white"/>
 
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="ACCEPTED"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="16dp"/>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:nestedScrollingEnabled="false"/>
 
-    <android.support.v7.widget.RecyclerView
-        android:layout_width="match_parent"
-        android:id="@+id/recycler_view2"
-        android:layout_height="wrap_content"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:text="ACCEPTED"
+            android:textColor="@android:color/white"/>
 
-</LinearLayout>
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:nestedScrollingEnabled="false"
+            android:layout_marginBottom="20dp"/>
+
+    </LinearLayout>
+
+</ScrollView>

@@ -63,7 +63,6 @@ public class FriendsActivity extends AppCompatActivity
         fragment = SeeAllFriendsFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
                 .commit();
     }
 
@@ -130,7 +129,6 @@ public class FriendsActivity extends AppCompatActivity
         fragment = WorkoutToChallenge.newInstance(id);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
                 .commit();
     }
 
@@ -140,7 +138,6 @@ public class FriendsActivity extends AppCompatActivity
         fragment = AddFriendFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
                 .commit();
     }
 
@@ -153,7 +150,6 @@ public class FriendsActivity extends AppCompatActivity
         fragment = SeeAllFriendsFragment.newInstance();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
-                .addToBackStack(null)
                 .commit();
 
         final List<Friend> listOfFriends = db.getAllFriends();

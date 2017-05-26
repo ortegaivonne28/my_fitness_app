@@ -223,7 +223,8 @@ public class RoutinesActivity extends AppCompatActivity
     public void setRoutine(final int which, final String thisId) throws ParseException {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage("Are you sure you want to ")
+        builder.setMessage("Are you sure you want to set this as you current routine? " +
+                "This will override you current routine ")
                 .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         try {

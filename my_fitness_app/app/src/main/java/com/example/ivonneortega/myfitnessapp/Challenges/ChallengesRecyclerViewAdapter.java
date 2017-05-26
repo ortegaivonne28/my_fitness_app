@@ -75,6 +75,15 @@ public class ChallengesRecyclerViewAdapter extends RecyclerView.Adapter<Challeng
                         Toast.makeText(holder.mChallengeCreator.getContext(), "Have to wait for approval", Toast.LENGTH_SHORT).show();
                     }
                 }
+                if(mList.get(holder.getAdapterPosition()).getStatus().equalsIgnoreCase(DatabaseTableNames.ACCEPTED))
+                {
+                    holder.mRoot.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mListener.clickedOnItemApproved(mList.get(holder.getAdapterPosition()));
+                        }
+                    });
+                }
             }
         });
     }
@@ -100,6 +109,7 @@ public class ChallengesRecyclerViewAdapter extends RecyclerView.Adapter<Challeng
 
     public interface ChallengesRecyclerInterface{
         void approvedAChallenge(Challenges challenge);
+        void clickedOnItemApproved(Challenges challenge);
     }
 
     public void swapList(List<Challenges> list)

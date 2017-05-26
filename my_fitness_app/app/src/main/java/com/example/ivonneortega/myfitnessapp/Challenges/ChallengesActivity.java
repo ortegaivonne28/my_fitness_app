@@ -1,6 +1,7 @@
 package com.example.ivonneortega.myfitnessapp.Challenges;
 
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -21,7 +22,7 @@ import com.example.ivonneortega.myfitnessapp.R;
 
 public class ChallengesActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
-
+    private String mDay;
 
 
     @Override
@@ -47,11 +48,15 @@ public class ChallengesActivity extends AppCompatActivity
         drawer.setDrawerListener(toggle);
         toggle.syncState();
 
+        Intent intent = getIntent();
+        String day = intent.getStringExtra("day");
+
+
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
 
         SeeAllChallenges fragment;
-        fragment = SeeAllChallenges.newInstance();
+        fragment = SeeAllChallenges.newInstance(day);
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_container, fragment)
                 .commit();

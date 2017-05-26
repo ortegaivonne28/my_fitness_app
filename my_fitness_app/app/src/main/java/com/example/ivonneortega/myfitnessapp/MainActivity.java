@@ -350,8 +350,8 @@ public class MainActivity extends FragmentActivity
         TextView mWaterCompleted, mWorkout, mCardio, mChallenges, mExtraWorkoutInfo, mSetNewWorkout;
         String mDay, mToday;
         FitnessDBHelper db;
-        boolean workoutForToday, workoutCompleted;
-        View mView;
+        boolean workoutForToday, workoutCompleted, mChallengeForToday;
+        View mView, mChallengeLayout;
 
         public static final String ARG_OBJECT = "object";
 
@@ -390,6 +390,8 @@ public class MainActivity extends FragmentActivity
             mView.setOnClickListener(this);
             mSetNewWorkout = (TextView) view.findViewById(R.id.workout_set_new_workout);
             mDividerWorkout = (ImageView) view.findViewById(R.id.dividerExtraWorkout);
+            mChallengeLayout = view.findViewById(R.id.challenge_layout);
+            mChallengeLayout.setOnClickListener(this);
 
 
             db = FitnessDBHelper.getInstance(mWorkout.getContext());
@@ -530,7 +532,37 @@ public class MainActivity extends FragmentActivity
                     }
 
                     break;
+
+                case R.id.challenge_layout:
+                    showDialogToSetChallenge();
+
+
+                    break;
             }
+        }
+
+        private void showDialogToSetChallenge() {
+            AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+            builder.setTitle("You don't have a challenge for this day!");
+            builder.setMessage("Would you like to set a challenge?")
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            Intent intent = new Intent(getActivity(),ChallengesActivity.class);
+                            intent.putExtra("day",mDay);
+                            startActivity(intent);
+
+                        }
+                    })
+                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            // User cancelled the dialog
+                        }
+                    });
+            // Create the AlertDialog object and return it
+            builder.create();
+            builder.show();
+
+
         }
 
         public void getWaterIntakeForToday()
@@ -672,6 +704,29 @@ public class MainActivity extends FragmentActivity
                 mSetNewWorkout.setVisibility(View.VISIBLE);
                 workoutForToday = false;
             }
+
+
+            Challenges challenge = db.getChallengeForToday(mDay);
+            if (challenge != null) {
+                mChallenges.setText(challenge.getTitle());
+                mChallengeForToday = true;
+//                if (db.isWorkoutCompletedForToday(mDay)) {
+//                    mSetNewWorkout.setVisibility(View.VISIBLE);
+//                    mExtraWorkoutInfo.setText("Workout completed!");
+//                    workoutForToday = false;
+//                    workoutCompleted = true;
+//                } else {
+//                    workoutForToday = true;
+//                }
+
+            } else {
+                  mChallenges.setText("You don't have any challenge for today!");
+                  mChallengeForToday = false;
+//                mDividerWorkout.setVisibility(View.VISIBLE);
+//                mSetNewWorkout.setVisibility(View.VISIBLE);
+//                workoutForToday = false;
+            }
+
         }
 
         public void showDialogToSetRoutineOrAddWorkout() {

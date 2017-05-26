@@ -377,8 +377,6 @@ public class ChallengesService extends Service {
                 if (dataSnapshot.exists()) {
                     String key = dataSnapshot.getKey();
 
-
-
                     User user = dataSnapshot.getValue(User.class);
                     List<Friend> friendList= user.getFriends();
                     if(friendList!=null && !db.doesFriendExitsInDatabase(friendList.get(friendList.size()-1).getFriendId()))

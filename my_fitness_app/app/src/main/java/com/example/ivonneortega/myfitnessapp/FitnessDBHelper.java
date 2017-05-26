@@ -91,6 +91,7 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
     public static final String COL_DAY_DATE = "day_date";
     //WORKOUT ID
     // CARDIO ID
+    // CHALLENGE ID
     public static final String COL_WEIGHT = "weight";
     public static final String COL_GLASSES_OF_WATER = "glasses_of_water";
     public static final String COL_WORKOUT_COMPLETED = "workout_completed";
@@ -260,6 +261,7 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
                     COL_WORKOUT_ID + " INTEGER, "+
                     COL_CARDIO_ID + " INTEGER, "+
                     COL_WEIGHT + " TEXT, "+
+                    COL_CHALLENGE_UNIQUE_KEY_FROM_FIREBASE + " TEXT, "+
                     COL_GLASSES_OF_WATER + " INTEGER, "+
                     COL_WORKOUT_COMPLETED + " INTEGER, "+
                     COL_CARDIO_COMPLETED + " INTEGER, "+
@@ -962,6 +964,73 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
         return -1;
     }
 
+    public Challenges getChallengeByUniqueId(String uniqueId)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+
+        Cursor cursor = db.query(CHALLENGE_TABLE_NAME, // a. table
+                null, // b. column names
+                COL_CHALLENGE_UNIQUE_KEY_FROM_FIREBASE+" = ?", // c. selections
+                new String[]{uniqueId}, // d. selections args
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+
+        Challenges challenges = new Challenges();
+        if (cursor.moveToFirst()) {
+            challenges.setId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_CHALLENGE_ID))));
+            challenges.setUniqueKey(uniqueId);
+            challenges.setStatus(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_STATUS)));
+            challenges.setUserId(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_USER_ID)));
+            challenges.setFriendId(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_FRIEND_ID)));
+            challenges.setCreatorId(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_ID_CREATOR)));
+            challenges.setTitle(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_TITLE)));
+            challenges.setWorkoutUser(getWorkoutInChallenge(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_WORKOUT_USER_ID)),DatabaseTableNames.CHALLENGE_USER));
+            if(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_WORKOUT_FRIEND_ID)) != null)
+                challenges.setWorkoutFriend(getWorkoutInChallenge(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_WORKOUT_FRIEND_ID)),DatabaseTableNames.CHALLENGE_FRIEND));
+
+            cursor.close();
+            return challenges;
+        }
+        cursor.close();
+        return null;
+    }
+
+    public Challenges getChallengeById(String id)
+    {
+        SQLiteDatabase db = getReadableDatabase();
+
+
+        Cursor cursor = db.query(CHALLENGE_TABLE_NAME, // a. table
+                null, // b. column names
+                COL_CHALLENGE_ID+" = ?", // c. selections
+                new String[]{id}, // d. selections args
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+
+        Challenges challenges = new Challenges();
+        if (cursor.moveToFirst()) {
+            challenges.setId(String.valueOf(cursor.getInt(cursor.getColumnIndex(COL_CHALLENGE_ID))));
+            challenges.setUniqueKey(id);
+            challenges.setStatus(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_STATUS)));
+            challenges.setUserId(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_USER_ID)));
+            challenges.setFriendId(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_FRIEND_ID)));
+            challenges.setCreatorId(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_ID_CREATOR)));
+            challenges.setTitle(cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_TITLE)));
+            challenges.setWorkoutUser(getWorkoutInChallenge(cursor.getString(cursor.getColumnIndex(COL_WORKOUT_COMPLETED_ID_OF_WORKOUT)),DatabaseTableNames.CHALLENGE_USER));
+            challenges.setWorkoutFriend(getWorkoutInChallenge(cursor.getString(cursor.getColumnIndex(COL_WORKOUT_COMPLETED_ID_OF_WORKOUT)),DatabaseTableNames.CHALLENGE_FRIEND));
+
+            cursor.close();
+            return challenges;
+        }
+        cursor.close();
+        return null;
+    }
+
 
 
 
@@ -1114,6 +1183,39 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
             return null;
     }
 
+    public Challenges getChallengeForToday(String today)
+    {
+
+        SQLiteDatabase db = getReadableDatabase();
+
+        today = today.replaceAll("\\s","");
+        today = today.replaceAll(":","1");
+
+
+        Cursor cursor = db.query(DAY_USER_NAME, // a. table
+                null, // b. column names
+                COL_DAY_DATE + " = ? ", // c. selections
+                new String[]{today}, // d. selections args
+                null, // e. group by
+                null, // f. having
+                null, // g. order by
+                null); // h. limit
+
+        Challenges challenges = null;
+        if (cursor.moveToFirst()) {
+            String uniqueId = cursor.getString(cursor.getColumnIndex(COL_CHALLENGE_UNIQUE_KEY_FROM_FIREBASE));
+
+            if(uniqueId!=null)
+                challenges = getChallengeByUniqueId(uniqueId);
+
+            cursor.close();
+            return challenges;
+
+        }
+        cursor.close();
+        return null;
+    }
+
     public boolean doesTodayExitInDatabase(String today)
     {
         SQLiteDatabase db = getReadableDatabase();
@@ -1176,6 +1278,24 @@ public class FitnessDBHelper extends SQLiteOpenHelper {
 
 
         db.update(DAY_USER_NAME,values,COL_DAY_ID+" = "+dayId,null);
+        db.close();
+    }
+
+    public void updateChallengeForToday(String today, String challengeId)
+    {
+
+
+        SQLiteDatabase db = getWritableDatabase();
+        ContentValues values = new ContentValues();
+
+
+        values.put(COL_CHALLENGE_UNIQUE_KEY_FROM_FIREBASE,challengeId);
+
+        String dayId = getDayIdByDate(today);
+
+
+        long id = db.update(DAY_USER_NAME,values,COL_DAY_ID+" = "+dayId,null);
+
         db.close();
     }
 
