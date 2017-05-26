@@ -4,7 +4,7 @@
              android:layout_height="match_parent"
               android:orientation="vertical"
              android:background="@drawable/add_workout_and_cardio_background"
-             tools:context="com.example.ivonneortega.myfitnessapp.AddWorkout.CreateWorkoutFragment">
+             tools:context="com.app.ivonneortega.myfitnessapp.my.app.ivonneortega.myfitnessapp.AddWorkout.CreateWorkoutFragment">
 
     <LinearLayout
         android:id="@+id/workout_name_linear"

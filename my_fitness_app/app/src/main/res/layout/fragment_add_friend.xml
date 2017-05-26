@@ -4,7 +4,7 @@
              android:layout_height="match_parent"
               android:orientation="vertical"
              android:background="@drawable/friends_background"
-             tools:context="com.example.ivonneortega.myfitnessapp.Friends.AddFriendFragment">
+             tools:context="com.app.ivonneortega.myfitnessapp.my.app.ivonneortega.myfitnessapp.Friends.AddFriendFragment">
 
 
     <android.support.v7.widget.SearchView

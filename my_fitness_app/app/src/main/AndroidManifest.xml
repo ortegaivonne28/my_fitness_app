@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="com.example.ivonneortega.myfitnessapp">
+          package="my.app.ivonneortega.myfitnessapp">
 
     <application
         android:allowBackup="true"
@@ -10,13 +10,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="my.app.ivonneortega.myfitnessapp.MainActivity"
             android:label="@string/title_activity_main"
             android:theme="@style/MainActivityTheme">
 
         </activity>
         <activity
-            android:name=".LoginActivity"
+            android:name="my.app.ivonneortega.myfitnessapp.LoginActivity"
             android:label="@string/title_activity_login"
             android:theme="@style/LoginActivityTheme">
             <intent-filter>
@@ -26,42 +26,42 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AddUserInformation.AddUserInformationActivity"
+            android:name="my.app.ivonneortega.myfitnessapp.AddUserInformation.AddUserInformationActivity"
             android:label="@string/title_activity_add_user_information"
             android:theme="@style/LoginActivityTheme">
         </activity>
         <activity
-            android:name=".Routines.RoutinesActivity"
+            android:name="my.app.ivonneortega.myfitnessapp.Routines.RoutinesActivity"
             android:label="@string/title_activity_routines"
             android:theme="@style/AddRoutineActivityTheme">
         </activity>
         <activity
-            android:name=".Routines.ExercisesPerDaysActivity"
+            android:name="my.app.ivonneortega.myfitnessapp.Routines.ExercisesPerDaysActivity"
             android:label="@string/title_activity_exercises_per_days"
             android:theme="@style/AddRoutineActivityTheme">
         </activity>
         <activity
-            android:name=".Workout.StartWorkoutActivity"
+            android:name="my.app.ivonneortega.myfitnessapp.Workout.StartWorkoutActivity"
             android:label="@string/title_activity_start_workout"
             android:theme="@style/WorkoutActivityTheme">
         </activity>
         <activity
-            android:name=".AddWorkout.AddWorkoutActivity"
+            android:name="my.app.ivonneortega.myfitnessapp.AddWorkout.AddWorkoutActivity"
             android:label="@string/title_activity_add_workout"
             android:theme="@style/WorkoutAndCardioTheme">
         </activity>
         <activity
-            android:name=".Friends.FriendsActivity"
+            android:name="my.app.ivonneortega.myfitnessapp.Friends.FriendsActivity"
             android:label="@string/title_activity_friends"
             android:theme="@style/FriendsTheme">
         </activity>
         <activity
-            android:name=".Challenges.ChallengesActivity"
+            android:name="my.app.ivonneortega.myfitnessapp.Challenges.ChallengesActivity"
             android:label="@string/title_activity_challenges"
-            android:theme="@style/AppTheme">
+            android:theme="@style/LoginActivityTheme">
         </activity>
 
-        <service android:name=".ChallengesService" />
+        <service android:name="my.app.ivonneortega.myfitnessapp.ChallengesService" />
     </application>
 
 </manifest>

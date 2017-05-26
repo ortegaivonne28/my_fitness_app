@@ -6,7 +6,7 @@
                 android:focusable="true"
                 android:focusableInTouchMode="true"
              android:background="@drawable/add_routine_background"
-             tools:context="com.example.ivonneortega.myfitnessapp.AddUserInformation.AddUserInformationFragment">
+             tools:context="com.app.ivonneortega.myfitnessapp.my.app.ivonneortega.myfitnessapp.AddUserInformation.AddUserInformationFragment">
 
     <LinearLayout
         android:layout_width="match_parent"

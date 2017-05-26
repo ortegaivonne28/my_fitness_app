@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/add_workout_and_cardio_background"
-    tools:context="com.example.ivonneortega.myfitnessapp.AddWorkout.AddWorkoutActivity">
+    tools:context="com.app.ivonneortega.myfitnessapp.my.app.ivonneortega.myfitnessapp.AddWorkout.AddWorkoutActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"

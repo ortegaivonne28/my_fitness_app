@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/main_background"
-    tools:context="com.example.ivonneortega.myfitnessapp.MainActivity">
+    tools:context="com.app.ivonneortega.myfitnessapp.my.app.ivonneortega.myfitnessapp.MainActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
